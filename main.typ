@@ -87,6 +87,7 @@
 #let div = $"div"$
 
 #let Hvec = $avec(H)$
+#let H0 = $limits(H)^circle.stroked.small$
 
 #let mesh = $cal(M)$
 
@@ -145,24 +146,13 @@
   ]
 ]
 
-
 #slide[
-  = Last time: Discrete Exterior Calculus
-  #snote[Previous case studies presentation with Felicia Scharitzer]
+  = Finite Element Exterior Calculus
+  #snote[Connects to last case study with Felicia Scharitzer.]
 
-  - Using theory of Exterior Calculus to solve PDE numerically.
-  - PDEs formulated using Differential Forms.
-  - DEC tackles *strong form* of PDE.
-]
-
-
-#slide[
-  = This time: Finite Element Exterior Calculus
-  #snote[Connects to the last talk.]
-
-  - Marriage of Finite Element Method and Exterior Calculus.
+  - Marriage of Finite Element Method and Exterior Calculus
   - FEM formulated using Differential Forms
-  - FEEC tackles weak variational form of PDE.
+  - FEEC tackles weak variational form of PDE
 ]
 
 #slide[
@@ -171,9 +161,9 @@
   #snote[What was that again?]
 
   - Modern formulation of traditional vector calculus
+  - Calculus on Riemannian Manifolds (Differential Geometry)
   - Unification of all kinds of integrals and derivatives
   - Generalization to arbitrary dimensions
-  - Calculus on Riemannian Manifolds (Differential Geometry)
 ]
 
 
@@ -244,29 +234,29 @@
 
 ]
 
-#slide[ 
-  = $k$-Vectors?
-  #snote[What's that now?]
-
-  - Generalization of vectors (1-dimensional oriented line segment)
-  - Oriented $k$-dimensional volume segments
-
-  #v(0.5cm)
-
-  #set par(spacing: 6pt)
-  #grid(
-    //stroke: 1pt + white,
-    columns: (1fr, 1fr),
-    align: center + horizon,
-    [
-      Bivector / 2-vector
-      #image("res/bivector-in-3d.svg", height: 50%)
-    ], [
-      Trivector / 3-vector
-      #image("res/trivector-in-3d.svg", height: 50%)
-    ]
-  )
-]
+//#slide[ 
+//  = $k$-Vectors?
+//  #snote[What's that now?]
+//
+//  - Generalization of vectors (1-dimensional oriented line segment)
+//  - Oriented $k$-dimensional segments
+//
+//  #v(0.5cm)
+//
+//  #set par(spacing: 6pt)
+//  #grid(
+//    //stroke: 1pt + white,
+//    columns: (1fr, 1fr),
+//    align: center + horizon,
+//    [
+//      Bivector / 2-vector
+//      #image("res/bivector-in-3d.svg", height: 50%)
+//    ], [
+//      Trivector / 3-vector
+//      #image("res/trivector-in-3d.svg", height: 50%)
+//    ]
+//  )
+//]
 
 #slide[
   // Unification of derivatives from vector calculus
@@ -296,9 +286,10 @@
 ]
 
 #slide[
-  = Analysis 2 Theorem Unification
+  = Theorem Unification
   #snote[One theorem to rule them all.]
   
+  // Analysis 2
   #set align(horizon + center)
   #grid(
     columns: (50%, 50%),
@@ -334,35 +325,63 @@
   = How to FEEC?
   #v(1cm)
 
-  Unify and generalize:
-  - PDE Domain
-  - Mesh
-  - Sobolev Spaces
-  - FE spaces
-  - Degrees of Freedom
+  Unify and generalize FEM using Differential Forms!
 ]
 
 
 #slide[
-  = Domain and Mesh
+  = Domain
   #v(1cm)
 
   - PDE Domain is Riemannian Manifold $Omega$
-  - Need to discretize it!
-  - Triangulation
-  - Simplex: Vertex, Edge, Triangle, Tetrahedron, ...
-  - Simplicial Complex
-  - Captures Topology, Geometry and Homology of continuous Manifold
-  - Structure-Preserving Discretization -> Correct PDE Solution
+  - Treating Domains of full topological generality (arbitrary Betti numbers)
+  - $k$-th Betti numbers = number of $k$-dim holes
+
+  #grid(
+    columns: (50%, 50%), 
+    align: center + horizon,
+    image("res/embedding.png"),
+    image("res/torus.png"),
+  )
 ]
 
 #slide[
-  = Beyond scalar-valued FEM
+  = Mesh
+  #v(1cm)
+
+  #grid(
+    columns: (60%, 40%), 
+    [
+      - Discretize PDE Domain
+      - Triangulation $mesh$ of manifold $Omega$
+      - Simplicial Complex
+      - Structure-preserving discretization of continuous manifold
+      - Topology, Geometry and Homology
+    ], [
+      #set align(center + horizon)
+      #image("res/moebius.png")
+    ]
+  )
+
+  
+  #grid(
+    columns: (50%, 50%), 
+    align: center + horizon,
+    image("res/simplices.png", width: 100%),
+    image("res/simplicialcomplex.png"),
+  )
+
+]
+
+#slide[
+  = Vector-valued FEM
+  #snote[Beyond scalar-valued FEM]
 
   - NumPDE: Only scalar-valued PDEs $u: Omega -> RR$
   - Only Lagrangian FEM.
   - But there's more!
   - Maxwells Equations!
+  - Electric Field $avec(E): Omega -> RR^3$ and Magnetic Field $avec(B): Omega -> RR^3$
 
   $
     &div avec(E) = rho/epsilon_0
@@ -373,30 +392,79 @@
     quad quad
     &&curl avec(B) = mu_0 (avec(J) + epsilon_0 (diff avec(E))/(diff t))
   $
-  
-  - Electric Field $avec(E): Omega -> RR^3$ and Magnetic Field $avec(B): Omega -> RR^3$
-  - We need function spaces for these vector fields!
-  - Weak formulation -> Integrals over $div$ and $curl$!
-  - More Sobolev Spaces:
-  $
-    H    (grad; Omega) = { u: Omega -> RR : integral_Omega norm(grad u)^2 < oo}
-    \
-    Hvec (curl; Omega) = { avec(u): Omega -> RR^3 : integral_Omega norm(curl u)^2 < oo}
-    \
-    Hvec (div ; Omega) = { avec(u): Omega -> RR^3 : integral_Omega abs(div u)^2 < oo}
-  $
-  - We need more FE spaces: Finite dimensiona subspaces of infite-dimensional Function space.
-
-  $
-    &H    (grad) &&arrow.squiggly "Lagrangian basis (vertices)"\
-    &Hvec (curl) &&arrow.squiggly "Nedelec basis (edges)"\
-    &Hvec (div)  &&arrow.squiggly "Raviart-Thomas basis (faces)"\
-  $
 ]
 
 #slide[
-  = Unification through FEEC
-  - Write Maxwells equation using Differential Forms. Neat!
+  = Vector-valued Sobolev Spaces
+  #snote[It's not so bad, don't worry.]
+  
+  - We need function spaces for these vector fields
+  - Weak formulation: Integrals over $curl$ and $div$
+
+  #set align(center)
+  #alternatives(
+    position: top,
+    $
+      H^1(Omega) &= { u: Omega -> RR : integral_Omega norm(grad u)^2 < oo}
+    $,
+    $
+      H (grad; Omega) &= { u: Omega -> RR : integral_Omega norm(grad u)^2 < oo}
+    $,
+    $
+      H (grad; Omega) &= { u: Omega -> RR : integral_Omega norm(grad u)^2 < oo}
+      \
+      Hvec (curl; Omega) &= { avec(u): Omega -> RR^3 : integral_Omega norm(curl u)^2 < oo}
+      \
+      Hvec (div ; Omega) &= { avec(u): Omega -> RR^3 : integral_Omega abs(div u)^2 < oo}
+    $
+  )
+]
+
+#slide[
+  = Vector-valued FE Spaces
+  #v(1cm)
+
+  - Finite dimensional subspaces of infite-dimensional function space.
+  - Need to meticulously construct $H(circle.filled.small; Omega)$-conforming FE space for each.
+
+  #grid(
+    columns: (50%, 50%),
+    align: horizon,
+    $
+      &H    (grad; Omega) &&supset.eq cal(S)^0_1   (mesh) \
+      &Hvec (curl; Omega) &&supset.eq bold(cal(N))   (mesh) \
+      &Hvec (div ; Omega) &&supset.eq bold(cal(R T)) (mesh) \
+    $,
+    [
+      - Lagrangian basis on vertices $mesh_0$
+      - Nédélec basis on edges $mesh_1$
+      - Raviart-Thomas basis on faces $mesh_2$
+    ]
+  )
+
+
+]
+
+#slide[
+  = Classical FEM vs FEEC
+  #v(1cm)
+
+  - These spaces seem very seperate...
+  - This is because of Vector Calculus #emoji.face.angry
+  - Can we unify them using Exterior Calculus?
+  - Can we extend them to more dimensions?
+  - Yes with FEEC!
+]
+
+#slide[
+  = Maxwell's Equations with Differential Forms
+  #v(1cm)
+
+  - Write Maxwells equation using Differential Forms.
+  - Electric Field is 1-form $E in Lambda^1(Omega)$
+  - Magnetic Field is 2-form $B in Lambda^2(Omega)$
+  - Current Density is 2-form $J in Lambda^2(Omega)$
+  - Electric Charge Density is 3-form $rho in Lambda^3(Omega)$
 
   $
     &dif E = rho/epsilon_0
@@ -407,52 +475,168 @@
     quad quad
     &&dif B = mu_0 (J + epsilon_0 (diff E)/(diff t))
   $
+]
 
-  $
-    E in Lambda^1(Omega)
-    quad
-    J in Lambda^2(Omega)
-    \
-    B in Lambda^2(Omega)
-    quad
-    rho in Lambda^3(Omega)
-  $
+#slide[
+  = Relativistic Electrodynamics
+  #snote[Einstein #emoji.hands.shake Maxwell]
 
-  $
-    // Faraday 2-form
-    F = E wedge dif t + B
-    quad in Lambda^2(Omega)
-    \
-    // current 3-form
-    J = rho + J wedge dif t
-    quad in Lambda^3(Omega)
-  $
+  - We can do even better!
+  - Make use of Relativistic Electrodynamics!
+  - Maxwell's Equations on 4D Spacetime Manifold!
+  - Faraday 2-form $F = E wedge dif t + B$
+  - Current 3-form $J = rho + J wedge dif t$
+  - Only two equations!
 
+  #v(1cm)
   $
     dif F = 0 \
     dif (star F) = J \
   $
-  
-  - Weak form -> Only integrals over exterior derivative!
-  - Unification of Sobolev spaces.
+]
+
+
+#slide[
+  = Sobolev Space of Differential Forms
+  #v(1cm)
+
+  - Weak form only involves one kind of derivative!
+  - The exterior derivative!
+  - Unification: Only one kind of Sobolev space!
   $
-    &H    (grad) &&= H Lambda^0 \
-    &Hvec (curl) &&= H Lambda^1 \
-    &Hvec (div)  &&= H Lambda^2 \
+    //H Lambda^k (Omega) = { omega in L^2 Lambda^k (Omega) : dif omega in L^2 Lambda^(k+1) (Omega) }
+    H Lambda^k (Omega) = { omega in Lambda^k (Omega) : integral_Omega dif omega < oo }
   $
 
   $
-    H Lambda^k (Omega) = { omega in L^2 Lambda^k (Omega) : dif omega in L^2 Lambda^(k+1) (Omega) }
+    &H    (grad; Omega) &&=^~ H Lambda^0 (Omega) \
+    &Hvec (curl; Omega) &&=^~ H Lambda^1 (Omega) \
+    &Hvec (div ; Omega) &&=^~ H Lambda^2 (Omega) \
   $
+]
+
+#slide[
+  = Whitney FE Space of Differential Forms
+  #v(1cm)
   
-  - Only have Space of Differential k-Forms.
-  - Need $H Lambda^k$-conforming FE spaces!
-  - Also only one type of piecewise-linear FE space: Whitney Basis!
-  - Whitney 0-forms = Lagrangian Basis (Barycentric)
-  - Whitney 1-forms = Nedelec
-  - Whitney 2-forms = Raviart-Thomas
-  - But in FEM: Of course higher order spaces possible!
-  - Space of polynomial differential-forms!!! Compare: DEC only linear.
+  - There is only one type of Sobolev space: $H Lambda^k (Omega)$
+  - Can we find a simple $H Lambda^k$-conforming FE-Space?
+  - Piecewise-linear over cells $mesh_n$ of triangulation $mesh$?
+  - Space of Whitney $k$-forms:
+  $
+    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in mesh_k}
+  $
+
+  $
+    cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
+    cal(W) Lambda^1 (mesh) &=^~ bold(cal(N)) (mesh) \
+    cal(W) Lambda^2 (mesh) &=^~ bold(cal(R T)) (mesh) \
+  $
+]
+
+#slide[
+  = The Structure behind FEEC
+  #v(1cm)
+
+  - There is a rich algebraic structure behind FEEC, called the de Rham complex,
+    which connects the different spaces and derivatives.
+  - It looks like this in vector calculus:
+
+  #[
+    #set align(center)
+    #alternatives(
+      $
+        0 -> C^oo (Omega) limits(->)^grad [C^oo (Omega)]^3 limits(->)^curl [C^oo (Omega)]^3 limits(->)^div C^oo (Omega) -> 0
+      $,
+      $
+        0 -> H(grad; Omega) limits(->)^grad Hvec (curl; Omega) limits(->)^curl Hvec (div; Omega) limits(->)^div L^2(Omega) -> 0
+      $
+    )
+  ]
+
+  #pause
+  #pause
+
+  - It's a cochain-complex and is intimitaly connected to the dual
+    Chain-Complex, which is here the Simplical Complex (mesh)
+  - Connects calculus structure (cohomology) to topology of mesh (homology)
+  - Necessary to treat domains of full topology generality.
+]
+
+#slide[
+  = Discrete Subcomplexes of de Rham complex
+  #v(1cm)
+
+  - In order to obtain a good discretization of a PDE, we need to preserve the structure of the continuous problem.
+  - We need to preserve this complex!
+  - So instead of only finding a discrete subspace of the Sobolev spaces, we want to find a elliptic subcomplex!
+  $
+    0 -> cal(S)^0_1 (mesh) limits(->)^grad bold(cal(N)) (mesh) limits(->)^curl bold(cal(R T)) (mesh) limits(->)^div cal(S)^(-1)_0 (mesh) -> 0
+  $
+]
+  
+#slide[
+  = Differential Form Complex
+  #v(1cm)
+
+  Exterior Calculus streamlines the de Rham complex.\
+  #only("2-")[And it extends the de Rham complex to arbitrary $n$ dimensions.\ ]
+  #only("3-")[And there are piecewise polynomial differential forms $cal(P)_r Lambda^k$ for any degree $r$.]
+  
+  #set align(center)
+  #alternatives(
+    $
+      0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
+      \
+      0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
+    $,
+    $
+      0 -> H Lambda^0 (Omega) limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega) -> 0
+      \
+      0 -> cal(W) Lambda^0 (mesh) limits(->)^dif dots.c limits(->)^dif cal(W) Lambda^n (mesh) -> 0
+    $,
+    $
+      0 -> H Lambda^0 (Omega)  limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega) -> 0
+      \
+      0 -> cal(P)_r Lambda^0 (mesh) limits(->)^dif dots.c limits(->)^dif cal(P)_r Lambda^n (mesh) -> 0
+    $
+  )
+]
+
+#slide[
+  = What is FEEC?
+  #v(1cm)
+
+  - It is extremly general:
+    - Arbitrary dimensions
+    - Arbitrary topological manifolds
+    - Arbitrary $k$-forms
+    - Arbitrary polynomial degree FE solutions
+  - It is a theoretical framework for establishing well-posedness of PDE problems, by respecting co-/homology.
+  - It is a manual for creating a FEM library of extreme generality.
+    - My bachelor's thesis:\ Rust Implementation of Finite Element Exterior Calculus on Coordinate-Free Simplicial Manifolds
+]
+
+
+#slide[
+  = Thank you for listening!
+
+  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
+  #set align(center + horizon)
+
+  #block()[
+    #set align(center)
+    #set par(spacing: 10pt)
+
+    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
+      options: (
+        scale: 4.0,
+        fg-color: fgcolor,
+        bg-color: bgcolor,
+      )
+    )
+    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
+  ]
 ]
 
 
@@ -606,70 +790,4 @@
 
 
 
-#slide[
 
-= Chain-Complex and Cochain-Complex
-De Rham Complex.
-Homology and Cohomology
-Simplicial Complex vs Differential Complex
-Preserve structure!
-Actually not only subspace of function space, but actually subcomplex! Preserve all homological structure! => Correct PDE solution.
-
-Develop discretizations that are compatible with geometric, topological and algebraic structures. -> Well-posedness of PDE problem
-Discretization is compatible with respect to elliptic complex! Our discret structures reproduce the properties of the continuous structure.
-
-  $
-    0 -> C^oo (Omega) limits(->)^grad [C^oo (Omega)]^3 limits(->)^curl [C^oo (Omega)]^3 limits(->)^div C^oo (Omega) -> 0
-    \
-    0 -> H(grad; Omega) limits(->)^grad Hvec (curl; Omega) limits(->)^curl Hvec (div; Omega) limits(->)^div L^2(Omega) -> 0
-    \
-    0 -> cal(S)^0_r (mesh) limits(->)^grad bold(cal(N))_(r-1) (mesh) limits(->)^curl bold(cal(R T))_(r-1) (mesh) limits(->)^div cal(S)^(-1)_(r-1) (mesh) -> 0
-  $
-  $
-    0 -> Lambda^0 (Omega) limits(->)^dif Lambda^1 (Omega) limits(->)^dif Lambda^2 (Omega) limits(->)^dif Lambda^3 (Omega) -> 0
-    \  
-    0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
-    \
-    0 -> cal(P)^-_r Lambda^0 (mesh) limits(->)^dif cal(P)^-_r Lambda^1 (mesh) limits(->)^dif cal(P)^-_r Lambda^2 (mesh) limits(->)^dif cal(P)^-_r Lambda^3 (mesh) -> 0
-  $
-  $
-    0 -> Lambda^0 (Omega) limits(->)^dif Lambda^1 (Omega) limits(->)^dif dots.c limits(->)^dif Lambda^n (Omega) -> 0
-    \
-    0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega) -> 0
-    \
-    0 -> cal(P)^-_r Lambda^0 (mesh) limits(->)^dif cal(P)^-_r Lambda^1 (mesh) limits(->)^dif dots.c limits(->)^dif cal(P)^-_r Lambda^n (mesh) -> 0
-  $
-]
-
-#slide[
-  = What is FEEC?
-
-  - Method for creating FEM codes of dimensional generality.
-  - Theoretical framework for establishing well-posedness of PDE problems.
-    - Unification of conforming FEM spaces
-  - Generalization to arbitrary dimensions!
-  - Respecting Topological and Homological properties of Domain -> Good discretization.
-  - My bachelor's thesis: Rust Implementation of Finite Element Exterior Calculus on Coordinate-Free Simplicial Manifolds
-]
-
-
-#slide[
-  = Thank you for listening!
-
-  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
-  #set align(center + horizon)
-
-  #block()[
-    #set align(center)
-    #set par(spacing: 10pt)
-
-    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
-      options: (
-        scale: 4.0,
-        fg-color: fgcolor,
-        bg-color: bgcolor,
-      )
-    )
-    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
-  ]
-]
