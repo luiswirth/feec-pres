@@ -1,9 +1,10 @@
 #import "@preview/touying:0.5.3": *
+#import "@preview/tiaoma:0.2.1"
 
 
-#let contentcolor = white
+#let fgcolor = white
 #let bgcolor = black
-#set text(fill: contentcolor)
+#set text(fill: fgcolor)
 #set page(fill: bgcolor)
 
 #let lwirth-theme(
@@ -28,13 +29,14 @@
 
 #show: lwirth-theme.with(white, black)
 
+#show heading.where(level: 1): set text(35pt)
+#show heading.where(level: 1): set block(spacing: 10pt)
 
 
-//#set par(justify: true)
-//#show math.equation: set text(font: "Noto Sans Math")
-
-
-#let weblink(a) = text(fill: blue, link(a))
+#let weblink(..args) = text(
+    fill: blue,
+    link(..args)
+  )
 
 #let snote(content) = [
   #set text(20pt)
@@ -55,7 +57,6 @@
 //  radius: 4pt,
 //)
 
-#show heading.where(level: 1): set text(35pt)
 
 #set math.mat(delim: "[")
 #set math.vec(delim: "[")
@@ -161,7 +162,7 @@
 
   - Marriage of Finite Element Method and Exterior Calculus.
   - FEM formulated using Differential Forms
-  - FEEC tackles *weak variational form* of PDE.
+  - FEEC tackles weak variational form of PDE.
 ]
 
 #slide[
@@ -169,10 +170,10 @@
   = Exterior Calculus of Differential Forms
   #snote[What was that again?]
 
-  - modern formulation of traditional *vector calculus*
-  - *unification* of all kinds of integrals and derivatives
-  - *generalization* to *arbitrary dimensions*
-  - Calculus on arbitrary Riemannian Manifolds (Differential Geometry)
+  - Modern formulation of traditional vector calculus
+  - Unification of all kinds of integrals and derivatives
+  - Generalization to arbitrary dimensions
+  - Calculus on Riemannian Manifolds (Differential Geometry)
 ]
 
 
@@ -186,6 +187,10 @@
   #let this(content) = text(fill: blue.lighten(20%), content)
   #let that(content) = text(fill: red, content)
 
+  // basis k-forms in red
+  // coefficent function in blue
+  // coefficents vary over space
+  // compare vector field also with space varying components
   $
     // line integral
     omega^1 &=
@@ -217,65 +222,48 @@
 
 #slide[
   = Differential $k$-Form
+  #snote[What is it?]
 
-  - $k$-dimensional measurement device $omega in Lambda^k (Omega)$
-  - measures $integral_M omega$ $k$-dimensional submanifold $M subset.eq Omega$
-  - coefficents determine ruler $omega_p$ at each point $p$
-  - tangential $k$-vectors measured at each point
+  - $k$-dimensional ruler $omega in Lambda^k (Omega)$
+  - ruler continuously varies across space $omega: p in Omega |-> omega_p$ according to #text(blue.lighten(20%))[coefficent functions]
+  - locally measures tangential $k$-vectors $omega_p: (T_p M)^k -> RR$
+  - globally measures $k$-dimensional submanifold $integral_M omega in RR$
 
-  $omega: p in Omega|-> omega_p quad quad omega_p: (T_p M)^k -> RR$
-
-  
+  #v(1cm)
   $
-    M subset.eq Omega
+    phi: [0,1]^k -> Omega
     quad quad
     M = "Image" phi
-    quad quad
-    phi: [0,1]^k -> Omega
     \
     integral_M omega =
     limits(integral dots.c integral)_([0,1]^k) quad
-    omega_(vvec(phi)(u))
-    ((diff vvec(phi))/(diff t_1) wedge dots wedge (diff vvec(phi))/(diff t_k))
-    dif t_1 dots.c dif t_k
+    omega_(avec(phi)(t))
+    ((diff avec(phi))/(diff t_1) wedge dots.c wedge (diff avec(phi))/(diff t_k))
+    dif t_1 dots dif t_k
   $
 
 ]
 
 #slide[ 
+  = $k$-Vectors?
+  #snote[What's that now?]
+
+  - Generalization of vectors (1-dimensional oriented line segment)
+  - Oriented $k$-dimensional volume segments
+
+  #v(0.5cm)
+
+  #set par(spacing: 6pt)
   #grid(
+    //stroke: 1pt + white,
     columns: (1fr, 1fr),
     align: center + horizon,
     [
-      #set align(left)
-      = Bivectors
-  
-      *Exterior Product* of two vectors $avec(u), avec(v) in RR^3$
-      #text(50pt)[$ avec(u) and avec(v) $]
-      
-      Results in *bivector* or *2-vector*. \
-      Oriented plane segment.
-    ],
-    image("res/bivector-in-3d.svg")
-  )
-]
-
-#slide[ 
-  #grid(
-    columns: (1fr, 1fr),
-    align: center + horizon,
-    [
-      #set align(left)
-      = Trivectors
-  
-      Take three vectors $avec(u), avec(v), avec(w) in RR^3$ and get a \
-      *trivector* or *3-vector*.
-      #text(50pt)[$ avec(u) and avec(v) and avec(w) $]
-
-      It's an oriented plane segment.
-    ],
-    [
-      #image("res/trivector-in-3d.svg")
+      Bivector / 2-vector
+      #image("res/bivector-in-3d.svg", height: 50%)
+    ], [
+      Trivector / 3-vector
+      #image("res/trivector-in-3d.svg", height: 50%)
     ]
   )
 ]
@@ -333,7 +321,7 @@
       $
     ],
     [
-      Generalized Stokes Theorem
+      Stokes' Theorem
       $
         integral_D dif omega = integral_(diff D) omega
       $
@@ -344,21 +332,22 @@
 
 #slide[
   = How to FEEC?
+  #v(1cm)
 
   Unify and generalize:
   - PDE Domain
   - Mesh
   - Sobolev Spaces
   - FE spaces
-  - Basis functions
+  - Degrees of Freedom
 ]
-
 
 
 #slide[
   = Domain and Mesh
+  #v(1cm)
 
-  - PDE Domain $Omega$ is Riemannian Manifold
+  - PDE Domain is Riemannian Manifold $Omega$
   - Need to discretize it!
   - Triangulation
   - Simplex: Vertex, Edge, Triangle, Tetrahedron, ...
@@ -388,7 +377,7 @@
   - Electric Field $avec(E): Omega -> RR^3$ and Magnetic Field $avec(B): Omega -> RR^3$
   - We need function spaces for these vector fields!
   - Weak formulation -> Integrals over $div$ and $curl$!
-  - More Sobolov Spaces:
+  - More Sobolev Spaces:
   $
     H    (grad; Omega) = { u: Omega -> RR : integral_Omega norm(grad u)^2 < oo}
     \
@@ -445,12 +434,17 @@
   $
   
   - Weak form -> Only integrals over exterior derivative!
-  - Unification of Sobolov spaces.
+  - Unification of Sobolev spaces.
   $
     &H    (grad) &&= H Lambda^0 \
     &Hvec (curl) &&= H Lambda^1 \
     &Hvec (div)  &&= H Lambda^2 \
   $
+
+  $
+    H Lambda^k (Omega) = { omega in L^2 Lambda^k (Omega) : dif omega in L^2 Lambda^(k+1) (Omega) }
+  $
+  
   - Only have Space of Differential k-Forms.
   - Need $H Lambda^k$-conforming FE spaces!
   - Also only one type of piecewise-linear FE space: Whitney Basis!
@@ -463,25 +457,121 @@
 
 
 #slide[
-  = Example: Hodge-Laplace Problem
+  = Hodge-Laplace Problem
+  #snote[Generalization of prototypical Poisson equation]
 
-  Derive weak form of Hodge-Laplace problem.
   $
     Delta u = f
+  $
+
+  Now $u$ and $f$ are Differential $k$-forms.
+  $
+    u in Lambda^k (Omega), f in Lambda^k (Omega)
+  $
+
+  And the Laplacian becomes the Hodge-Laplace operator.
+  $
+    Delta: Lambda^k (Omega) -> Lambda^k (Omega)
     \
-    (dif delta + delta dif) u = f
-    \
+    Delta = dif delta + delta dif
+  $
+]
+
+#slide[
+  = Coderivative Operator
+
+  Coderivative operator $delta: Lambda^k (Omega) -> Lambda^(k-1) (Omega)$
+  defined such that
+  $
+    star delta omega = (-1)^k dif star omega
+  $
+]
+
+#slide[
+  = Weak Variational Form
+  #v(1cm)
+
+  In order to do FEM, we need to change from the strong PDE form into the weark variational form.
+
+  We need to form the $L^2$-inner product with a test "function" $v in Lambda^k (Omega)$.
+
+  The inner product is defined as
+  $
+    inner(omega, eta)_(L^2 Lambda^k)
+    =
+    integral_Omega inner(omega_x, eta_x) "vol"
+    =
+    integral omega wedge star eta
+  $
+]
+
+#slide[
+  = Integrate against Test function
+
+  Take strong form and form $L^2$-inner product with test function $v$
+  $
+    Delta u = f
+  $
+
+  We obtain the variational equation
+  $
+    u in H Lambda^k (Omega): quad quad
+    inner(Delta u, v) = inner(f, v)
+    quad quad forall v in H Lambda^k (Omega)
+  $
+
+  Or in integral form
+  $
     integral_Omega ((dif delta + delta dif) u) wedge star v = integral_Omega f wedge star v
+  $
+]
+
+#slide[
+  = Integration by Parts
+
+  $
+    integral_Omega dif omega wedge eta
+    =
+    (-1)^(k-1)
+    integral_Omega omega wedge dif eta
+    +
+    integral_(diff Omega) "Tr" omega wedge "Tr" eta
+  $
+
+  $
+    inner(dif omega, eta) = inner(omega, delta eta) + integral_(diff Omega) "Tr" omega wedge "Tr" star eta
+  $
+
+  If $omega$ or $eta$ vanishes on the boundary, then
+  $delta$ is the formal adjoint of $dif$ w.r.t. the $L^2$-inner product.
+  $
+    inner(dif omega, eta) = inner(omega, delta eta)
+  $
+
+  $
+    inner(Delta u, v) = inner(f, v)
     \
-    integral_Omega (dif delta u) wedge star v + integral_Omega (delta dif u) wedge star v = integral_Omega f wedge star v
+    inner((dif delta + delta dif) u, v) = inner(f, v)
     \
-    integral_Omega (delta u) wedge star (delta v) + integral_Omega (dif u) wedge star (dif v) = integral_Omega f wedge star v
+    inner((dif delta + delta dif) u, v) = inner(f, v)
     \
-    integral_Omega (delta u) wedge star (delta v) + integral_Omega (dif u) wedge star (dif v) = integral_Omega f wedge star v
+    inner(dif delta u, v) + inner(delta dif u, v) = inner(f, v)
     \
+    inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
+  $
+
+  $
     u in H Lambda^k (Omega): quad quad
     inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
-    quad quad forall v in H Lambda^k (Omega)
+    quad
+    forall v in H Lambda^k (Omega)
+  $
+
+  $
+    u in H Lambda^k (Omega): quad
+    integral_Omega (delta u) wedge star (delta v) + integral_Omega (dif u) wedge star (dif v) = integral_Omega f wedge star v
+    quad
+    forall v in H Lambda^k (Omega)
   $
 ]
 
@@ -515,27 +605,6 @@
 ]
 
 
-#slide[
-  $L^2$-Inner product on Differential $n$-forms
-  $
-    inner(alpha, beta) = integral_Omega alpha wedge star beta
-  $
-
-  Define coderivative $delta: Lambda^k -> Lambda^(k-1)$ as
-  $
-    star delta omega = (-1)^k dif star omega
-  $
-  From this we get integration by parts formulas
-  $
-    inner(dif omega, eta) = inner(omega, delta eta) + integral_(diff Omega) "Tr" omega wedge "Tr" star eta
-  $
-
-  Therefore the coderivative $delta$ is the formal adjoint of the exterior derivative $dif$ w.r.t.
-  $L^2$-inner product if $omega$ or $eta$ vanish near the boundary $diff Omega$:
-  $
-    inner(dif omega, eta) = inner(omega, delta eta)
-  $
-]
 
 #slide[
 
@@ -577,12 +646,9 @@ Discretization is compatible with respect to elliptic complex! Our discret struc
 
   - Method for creating FEM codes of dimensional generality.
   - Theoretical framework for establishing well-posedness of PDE problems.
-  
-  - Unification of conforming FEM spaces
+    - Unification of conforming FEM spaces
   - Generalization to arbitrary dimensions!
   - Respecting Topological and Homological properties of Domain -> Good discretization.
-
-
   - My bachelor's thesis: Rust Implementation of Finite Element Exterior Calculus on Coordinate-Free Simplicial Manifolds
 ]
 
@@ -590,7 +656,20 @@ Discretization is compatible with respect to elliptic complex! Our discret struc
 #slide[
   = Thank you for listening!
 
-  
-  - Any questions?
-  - Slides on GitHub!
+  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
+  #set align(center + horizon)
+
+  #block()[
+    #set align(center)
+    #set par(spacing: 10pt)
+
+    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
+      options: (
+        scale: 4.0,
+        fg-color: fgcolor,
+        bg-color: bgcolor,
+      )
+    )
+    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
+  ]
 ]
