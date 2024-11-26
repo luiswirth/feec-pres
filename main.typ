@@ -1,4 +1,5 @@
 #import "@preview/touying:0.5.3": *
+#import "@preview/fletcher:0.5.2" as fletcher: diagram, node, edge
 #import "@preview/tiaoma:0.2.1"
 
 
@@ -353,10 +354,9 @@
     columns: (60%, 40%), 
     [
       - Discretize PDE Domain
-      - Triangulation $mesh$ of manifold $Omega$
-      - Simplicial Complex
-      - Structure-preserving discretization of continuous manifold
-      - Topology, Geometry and Homology
+      - Obtain Simplicial Complex $mesh$ by triangulating manifold $Omega$
+      - All simplicies in mesh $Delta^k (mesh)$
+      - Preserve topology and geometry of continuous manifold
     ], [
       #set align(center + horizon)
       #image("res/moebius.png")
@@ -374,14 +374,14 @@
 ]
 
 #slide[
-  = Vector-valued FEM
-  #snote[Beyond scalar-valued FEM]
+  = FEM in Vector-Calculus
+  #snote[To motivate FEEC]
 
-  - NumPDE: Only scalar-valued PDEs $u: Omega -> RR$
-  - Only Lagrangian FEM.
-  - But there's more!
-  - Maxwells Equations!
-  - Electric Field $avec(E): Omega -> RR^3$ and Magnetic Field $avec(B): Omega -> RR^3$
+  NumPDE: Mostly scalar-valued PDEs $u: Omega -> RR$ \
+  But we could also have a vector-valued $avec(u): Omega -> RR^3$.
+
+  Maxwells Equations \
+  Electric Field $avec(E): Omega -> RR^3$ and Magnetic Field $avec(B): Omega -> RR^3$
 
   $
     &div avec(E) = rho/epsilon_0
@@ -396,10 +396,10 @@
 
 #slide[
   = Vector-valued Sobolev Spaces
-  #snote[It's not so bad, don't worry.]
+  #v(1cm)
   
-  - We need function spaces for these vector fields
-  - Weak formulation: Integrals over $curl$ and $div$
+  Need function spaces for vector fields.\
+  #only("3-")[Weak formulation: Integrals over $curl$ and $div$]
 
   #set align(center)
   #alternatives(
@@ -421,14 +421,35 @@
 ]
 
 #slide[
+  = The de Rham Complex
+  #snote[The underlying differential structure]
+
+  - There is a rich algebraic structure connecting the these Sobolev spaces
+    through their respective derivatives.
+
+  
+  THIS WILL HOPEFULLY ALLOW ME TO WRITE SUBSETS. MAYBE HERE SMOOTH SUBSPACE
+  #diagram(
+    edge-stroke: fgcolor,
+    cell-size: 15mm,
+    $
+      0 edge(->) &H(grad; Omega) edge(grad, ->) &Hvec (curl; Omega) edge(curl, ->) &Hvec (div; Omega) edge(div, ->) &L^2(Omega) edge(->) &0
+    $
+  )
+
+  $
+  $
+]
+
+#slide[
   = Vector-valued FE Spaces
   #v(1cm)
 
-  - Finite dimensional subspaces of infite-dimensional function space.
+  - Finite dimensional subspaces of infinite-dimensional function space.
   - Need to meticulously construct $H(circle.filled.small; Omega)$-conforming FE space for each.
 
   #grid(
-    columns: (50%, 50%),
+    columns: (40%, 60%),
     align: horizon,
     $
       &H    (grad; Omega) &&supset.eq cal(S)^0_1   (mesh) \
@@ -436,14 +457,32 @@
       &Hvec (div ; Omega) &&supset.eq bold(cal(R T)) (mesh) \
     $,
     [
-      - Lagrangian basis on vertices $mesh_0$
-      - Nédélec basis on edges $mesh_1$
-      - Raviart-Thomas basis on faces $mesh_2$
+      - Lagrangian basis on vertices $Delta^0 (mesh)$
+      - Nédélec basis on edges $Delta^1 (mesh)$
+      - Raviart-Thomas basis on faces $Delta^2 (mesh)$
     ]
   )
-
-
 ]
+
+
+#slide[
+  = Discrete Subcomplexes of de Rham complex
+  #v(1cm)
+
+  
+  MAYBE WE CAN MERGE WITH THE PREVIOUS SLIDE
+
+  - In order to obtain a good discretization of a PDE, we need to preserve the structure of the continuous problem.
+  - We need to respect the de Rham complex!
+  - So instead of only finding a discrete subspace of the Sobolev spaces, we want to find a elliptic subcomplex!
+
+
+  HERE ONCE AGAIN DIAGRAM WITH SUBSETS OF SOBOLEV SPACE NOTATION
+  $
+    0 -> cal(S)^0_1 (mesh) limits(->)^grad bold(cal(N)) (mesh) limits(->)^curl bold(cal(R T)) (mesh) limits(->)^div cal(S)^(-1)_0 (mesh) -> 0
+  $
+]
+
 
 #slide[
   = Classical FEM vs FEEC
@@ -527,35 +566,39 @@
     cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in mesh_k}
   $
 
-  $
-    cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
-    cal(W) Lambda^1 (mesh) &=^~ bold(cal(N)) (mesh) \
-    cal(W) Lambda^2 (mesh) &=^~ bold(cal(R T)) (mesh) \
-  $
+  #grid(
+    columns: (50%, 50%),
+    align: center + horizon,
+    $
+      cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
+      cal(W) Lambda^1 (mesh) &=^~ bold(cal(N)) (mesh) \
+      cal(W) Lambda^2 (mesh) &=^~ bold(cal(R T)) (mesh) \
+    $,
+    [
+      - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta^0 (mesh)$
+      - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta^1 (mesh)$
+      - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta^2 (mesh)$
+    ]
+  )
 ]
 
+
 #slide[
-  = The Structure behind FEEC
+  = de Rham Complex of Differential Forms
   #v(1cm)
 
-  - There is a rich algebraic structure behind FEEC, called the de Rham complex,
-    which connects the different spaces and derivatives.
-  - It looks like this in vector calculus:
+  Exterior Calculus streamlines the de Rham complex.\
+  
+  $
+    0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
+    \
+  $
 
-  #[
-    #set align(center)
-    #alternatives(
-      $
-        0 -> C^oo (Omega) limits(->)^grad [C^oo (Omega)]^3 limits(->)^curl [C^oo (Omega)]^3 limits(->)^div C^oo (Omega) -> 0
-      $,
-      $
-        0 -> H(grad; Omega) limits(->)^grad Hvec (curl; Omega) limits(->)^curl Hvec (div; Omega) limits(->)^div L^2(Omega) -> 0
-      $
-    )
-  ]
+  $
+    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
+  $
 
-  #pause
-  #pause
+  IS THERE A CONTINUOUS(!) CHAIN-COMPLEX NOTATION?
 
   - It's a cochain-complex and is intimitaly connected to the dual
     Chain-Complex, which is here the Simplical Complex (mesh)
@@ -563,33 +606,32 @@
   - Necessary to treat domains of full topology generality.
 ]
 
+
 #slide[
-  = Discrete Subcomplexes of de Rham complex
+  = Subcomplex of Differential Forms
   #v(1cm)
 
-  - In order to obtain a good discretization of a PDE, we need to preserve the structure of the continuous problem.
-  - We need to preserve this complex!
-  - So instead of only finding a discrete subspace of the Sobolev spaces, we want to find a elliptic subcomplex!
   $
-    0 -> cal(S)^0_1 (mesh) limits(->)^grad bold(cal(N)) (mesh) limits(->)^curl bold(cal(R T)) (mesh) limits(->)^div cal(S)^(-1)_0 (mesh) -> 0
+    0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
+  $
+
+  $
+    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
   $
 ]
-  
+
 #slide[
-  = Differential Form Complex
+  = Generalization in FEEC
   #v(1cm)
 
-  Exterior Calculus streamlines the de Rham complex.\
   #only("2-")[And it extends the de Rham complex to arbitrary $n$ dimensions.\ ]
   #only("3-")[And there are piecewise polynomial differential forms $cal(P)_r Lambda^k$ for any degree $r$.]
-  
+
   #set align(center)
+
+  WRITE AS SUBCOMPLEX
+
   #alternatives(
-    $
-      0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
-      \
-      0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
-    $,
     $
       0 -> H Lambda^0 (Omega) limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega) -> 0
       \
@@ -620,6 +662,8 @@
 
 #slide[
   = Thank you for listening!
+
+  PUT A FORMONIQ PICTURE/ANIMATION AND QR CODE FOR FORMONIQ
 
   //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
   #set align(center + horizon)
@@ -744,6 +788,8 @@
     inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
   $
 
+  #v(1cm)
+
   $
     u in H Lambda^k (Omega): quad quad
     inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
@@ -760,6 +806,7 @@
 ]
 
 #slide[
+  #set text(18pt)
   $
     u_h = sum_(i=1)^N mu_i phi_i
     quad quad
@@ -770,22 +817,25 @@
     u in H Lambda^k (Omega): quad quad
     inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
     quad quad forall v in H Lambda^k (Omega)
-    \
-    sum_(i=1)^N mu_i (integral_Omega (delta phi_i) wedge star (delta phi_j) + integral_Omega (dif phi_i) wedge star (dif phi_j)) = 0
-    \
-    amat(A) vvec(mu) = 0
+  $
+  $
+    vvec(mu) in RR^N: quad
+    sum_(i=1)^N mu_i (integral_Omega (delta phi_i) wedge star (delta phi_j) + integral_Omega (dif phi_i) wedge star (dif phi_j))
+    =
+    sum_(i=1)^N mu_i integral_Omega f wedge star phi_j
+    quad forall j in {1,dots,N}
   $
 
   $
-    A = C + D
+    amat(A) vvec(mu) = 0
     \
-    C = [integral_Omega (delta phi_i) wedge star (delta phi_j)]_(i,j=1)^N
-    \
-    D = [integral_Omega (dif phi_i) wedge star (dif phi_j)]_(i,j=1)^N
+    A =
+    [integral_Omega (delta phi_i) wedge star (delta phi_j)]_(i,j=1)^N
+    +
+    [integral_Omega (dif phi_i) wedge star (dif phi_j)]_(i,j=1)^N
     \
     vvec(phi) = [integral_Omega f wedge star phi_j]_(j=1)^N
   $
-
 ]
 
 
