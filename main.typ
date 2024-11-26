@@ -479,16 +479,15 @@
   = Discrete Subcomplexes of de Rham complex
   #v(1cm)
 
-  
-  - In order to obtain a good discretization of a PDE, we need to preserve the structure of the continuous problem.
-  - We need to respect the de Rham complex!
-  - So instead of only finding a discrete subspace of the Sobolev spaces, we want to find a elliptic subcomplex!
-
-
+  - Good discretization of PDE?
+  - Preserve the structure of the continuous problem!
+  - The de Rham complex!
   $
     0 -> H (grad; Omega) limits(->)^grad Hvec (curl; Omega) limits(->)^curl Hvec (div; Omega) limits(->)^div L^2(Omega) -> 0
   $
+  #pause
 
+  Find discrete subcomplex!
   $
     0 -> cal(S)^0_1 (mesh) limits(->)^grad bold(cal(N)) (mesh) limits(->)^curl bold(cal(R T)) (mesh) limits(->)^div cal(S)^(-1)_0 (mesh) -> 0
   $
@@ -572,7 +571,6 @@
   
   $
     0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
-    \
   $
   #pause
 
@@ -580,6 +578,8 @@
   $
     0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
   $
+  #pause
+
   Relating calculus structure (cohomology) to topology of mesh (homology) \
   Necessary to treat domains of full topology generality.
 ]
@@ -590,26 +590,27 @@
   
   - Only one type of Sobolev space: $H Lambda^k (Omega)$
     - Only one kind of FE Space!
-  - Piecewise-linear #text(blue)[coefficents] over cells $Delta^n (mesh)$
   - Space of Whitney $k$-forms:
+  - Piecewise-linear #text(blue)[coefficents] over cells $Delta^n (mesh)$
+  #pause
+  
   $
     cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in Delta^k (mesh)}
   $
-  #pause
 
   #grid(
     columns: (50%, 50%),
     align: center + horizon,
-    $
-      cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
-      cal(W) Lambda^1 (mesh) &=^~ bold(cal(N)) (mesh) \
-      cal(W) Lambda^2 (mesh) &=^~ bold(cal(R T)) (mesh) \
-    $,
-    [
+    only("3-")[
       - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta^0 (mesh)$
       - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta^1 (mesh)$
       - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta^2 (mesh)$
-    ]
+    ],
+    only("4-")[$
+      cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
+      cal(W) Lambda^1 (mesh) &=^~ bold(cal(N)) (mesh) \
+      cal(W) Lambda^2 (mesh) &=^~ bold(cal(R T)) (mesh) \
+    $],
   )
 ]
 
@@ -621,11 +622,11 @@
   #v(1cm)
 
   $
-    0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
+    0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
   $
 
   $
-    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
+    0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
   $
 ]
 
@@ -681,34 +682,15 @@
     #set align(center)
     #set par(spacing: 10pt)
 
-    #grid(
-      columns: (1fr, 1fr),
-      fill: black.transparentize(20%),
-      inset: 10pt,
-      [
-        Presentation Slides
-        #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
-          options: (
-            scale: 4.0,
-            fg-color: fgcolor,
-            bg-color: bgcolor,
-          )
-        )
-        #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
-      ],
-      [
-        My FEEC Library
-        #tiaoma.qrcode("https://github.com/luiswirth/formoniq",
-          options: (
-            scale: 4.0,
-            fg-color: fgcolor,
-            bg-color: bgcolor,
-          )
-        )
-        #weblink("https://github.com/luiswirth/formoniq", "github:luiswirth/formoniq")
-      ]
+    Presentation Slides
+    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
+      options: (
+        scale: 4.0,
+        fg-color: fgcolor,
+        bg-color: bgcolor,
+      )
     )
-
+    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
   ]
 ]
 
