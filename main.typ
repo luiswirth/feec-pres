@@ -216,23 +216,22 @@
   #snote[What is it?]
 
   - $k$-dimensional ruler $omega in Lambda^k (Omega)$
-  - ruler continuously varies across space $omega: p in Omega |-> omega_p$ according to #text(blue.lighten(20%))[coefficent functions]
+  - ruler $omega: p in Omega |-> omega_p$ varies continuously  across manifold according to #text(blue.lighten(20%))[coefficent functions]
   - locally measures tangential $k$-vectors $omega_p: (T_p M)^k -> RR$
   - globally measures $k$-dimensional submanifold $integral_M omega in RR$
 
-  #v(1cm)
-  $
-    phi: [0,1]^k -> Omega
-    quad quad
-    M = "Image" phi
-    \
-    integral_M omega =
-    limits(integral dots.c integral)_([0,1]^k) quad
-    omega_(avec(phi)(t))
-    ((diff avec(phi))/(diff t_1) wedge dots.c wedge (diff avec(phi))/(diff t_k))
-    dif t_1 dots dif t_k
-  $
-
+  //#v(1cm)
+  //$
+  //  phi: [0,1]^k -> Omega
+  //  quad quad
+  //  M = "Image" phi
+  //  \
+  //  integral_M omega =
+  //  limits(integral dots.c integral)_([0,1]^k) quad
+  //  omega_(avec(phi)(t))
+  //  ((diff avec(phi))/(diff t_1) wedge dots.c wedge (diff avec(phi))/(diff t_k))
+  //  dif t_1 dots dif t_k
+  //$
 ]
 
 //#slide[ 
@@ -270,11 +269,11 @@
     align: horizon,
     [
       $
-        grad f = (dif f)^transp
+        grad f &= (dif f)^transp
         \
-        "curl" vvec(F) = star d star vvec(F)^transp
+        "curl" vvec(F) &= star d star vvec(F)^transp
         \
-        "div" vvec(F) = (star dif vvec(F)^transp)^transp
+        "div" vvec(F) &= (star dif vvec(F)^transp)^transp
       $
     ],
     [
@@ -344,9 +343,15 @@
     image("res/embedding.png"),
     image("res/torus.png"),
   )
+
+  //$
+  //  0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
+  //$
 ]
 
 #slide[
+  #set page(margin: (bottom: 0cm))
+
   = Mesh
   #v(1cm)
 
@@ -355,7 +360,7 @@
     [
       - Discretize PDE Domain
       - Obtain Simplicial Complex $mesh$ by triangulating manifold $Omega$
-      - All simplicies in mesh $Delta^k (mesh)$
+      - Contains all $k$-dim simplicies $Delta^k (mesh)$
       - Preserve topology and geometry of continuous manifold
     ], [
       #set align(center + horizon)
@@ -363,14 +368,12 @@
     ]
   )
 
-  
-  #grid(
-    columns: (50%, 50%), 
-    align: center + horizon,
-    image("res/simplices.png", width: 100%),
-    image("res/simplicialcomplex.png"),
-  )
-
+  #set align(center)
+  #set block(below: 1pt)
+  #image("res/simplices.png", width: 80%)
+  $
+    0 limits(<--)^diff #h(1cm) Delta^0 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^1 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^2 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^3 (mesh) #h(1cm) limits(<--)^diff 0
+  $
 ]
 
 #slide[
@@ -379,6 +382,7 @@
 
   NumPDE: Mostly scalar-valued PDEs $u: Omega -> RR$ \
   But we could also have a vector-valued $avec(u): Omega -> RR^3$.
+  #pause
 
   Maxwells Equations \
   Electric Field $avec(E): Omega -> RR^3$ and Magnetic Field $avec(B): Omega -> RR^3$
@@ -424,21 +428,27 @@
   = The de Rham Complex
   #snote[The underlying differential structure]
 
-  - There is a rich algebraic structure connecting the these Sobolev spaces
+  - There is a rich algebraic structure connecting these Sobolev spaces
     through their respective derivatives.
 
+  $
+    0 -> H (grad; Omega) limits(->)^grad Hvec (curl; Omega) limits(->)^curl Hvec (div; Omega) limits(->)^div L^2(Omega) -> 0
+  $
+  #pause
   
-  THIS WILL HOPEFULLY ALLOW ME TO WRITE SUBSETS. MAYBE HERE SMOOTH SUBSPACE
-  #diagram(
-    edge-stroke: fgcolor,
-    cell-size: 15mm,
-    $
-      0 edge(->) &H(grad; Omega) edge(grad, ->) &Hvec (curl; Omega) edge(curl, ->) &Hvec (div; Omega) edge(div, ->) &L^2(Omega) edge(->) &0
-    $
-  )
+  $
+    curl compose grad = 0
+    quad quad
+    div compose curl = 0
+  $
 
-  $
-  $
+  //#diagram(
+  //  edge-stroke: fgcolor,
+  //  cell-size: 15mm,
+  //  $
+  //    0 edge(->) &H(grad; Omega) edge(grad, ->) &Hvec (curl; Omega) edge(curl, ->) &Hvec (div; Omega) edge(div, ->) &L^2(Omega) edge(->) &0
+  //  $
+  //)
 ]
 
 #slide[
@@ -470,14 +480,15 @@
   #v(1cm)
 
   
-  MAYBE WE CAN MERGE WITH THE PREVIOUS SLIDE
-
   - In order to obtain a good discretization of a PDE, we need to preserve the structure of the continuous problem.
   - We need to respect the de Rham complex!
   - So instead of only finding a discrete subspace of the Sobolev spaces, we want to find a elliptic subcomplex!
 
 
-  HERE ONCE AGAIN DIAGRAM WITH SUBSETS OF SOBOLEV SPACE NOTATION
+  $
+    0 -> H (grad; Omega) limits(->)^grad Hvec (curl; Omega) limits(->)^curl Hvec (div; Omega) limits(->)^div L^2(Omega) -> 0
+  $
+
   $
     0 -> cal(S)^0_1 (mesh) limits(->)^grad bold(cal(N)) (mesh) limits(->)^curl bold(cal(R T)) (mesh) limits(->)^div cal(S)^(-1)_0 (mesh) -> 0
   $
@@ -520,12 +531,9 @@
   = Relativistic Electrodynamics
   #snote[Einstein #emoji.hands.shake Maxwell]
 
-  - We can do even better!
-  - Make use of Relativistic Electrodynamics!
   - Maxwell's Equations on 4D Spacetime Manifold!
   - Faraday 2-form $F = E wedge dif t + B$
   - Current 3-form $J = rho + J wedge dif t$
-  - Only two equations!
 
   #v(1cm)
   $
@@ -546,6 +554,7 @@
     //H Lambda^k (Omega) = { omega in L^2 Lambda^k (Omega) : dif omega in L^2 Lambda^(k+1) (Omega) }
     H Lambda^k (Omega) = { omega in Lambda^k (Omega) : integral_Omega dif omega < oo }
   $
+  #pause
 
   $
     &H    (grad; Omega) &&=^~ H Lambda^0 (Omega) \
@@ -554,17 +563,39 @@
   $
 ]
 
+
+#slide[
+  = de Rham Complex of Differential Forms
+  #v(1cm)
+
+  Exterior Calculus streamlines the de Rham complex.\
+  
+  $
+    0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
+    \
+  $
+  #pause
+
+  Connected to simplicial complex\
+  $
+    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
+  $
+  Relating calculus structure (cohomology) to topology of mesh (homology) \
+  Necessary to treat domains of full topology generality.
+]
+
 #slide[
   = Whitney FE Space of Differential Forms
   #v(1cm)
   
-  - There is only one type of Sobolev space: $H Lambda^k (Omega)$
-  - Can we find a simple $H Lambda^k$-conforming FE-Space?
-  - Piecewise-linear over cells $mesh_n$ of triangulation $mesh$?
+  - Only one type of Sobolev space: $H Lambda^k (Omega)$
+    - Only one kind of FE Space!
+  - Piecewise-linear #text(blue)[coefficents] over cells $Delta^n (mesh)$
   - Space of Whitney $k$-forms:
   $
-    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in mesh_k}
+    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in Delta^k (mesh)}
   $
+  #pause
 
   #grid(
     columns: (50%, 50%),
@@ -583,28 +614,6 @@
 ]
 
 
-#slide[
-  = de Rham Complex of Differential Forms
-  #v(1cm)
-
-  Exterior Calculus streamlines the de Rham complex.\
-  
-  $
-    0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
-    \
-  $
-
-  $
-    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
-  $
-
-  IS THERE A CONTINUOUS(!) CHAIN-COMPLEX NOTATION?
-
-  - It's a cochain-complex and is intimitaly connected to the dual
-    Chain-Complex, which is here the Simplical Complex (mesh)
-  - Connects calculus structure (cohomology) to topology of mesh (homology)
-  - Necessary to treat domains of full topology generality.
-]
 
 
 #slide[
@@ -624,12 +633,10 @@
   = Generalization in FEEC
   #v(1cm)
 
-  #only("2-")[And it extends the de Rham complex to arbitrary $n$ dimensions.\ ]
-  #only("3-")[And there are piecewise polynomial differential forms $cal(P)_r Lambda^k$ for any degree $r$.]
+  Extend the de Rham complex to arbitrary $n$ dimensions.\
+  #only("2-")[Piecewise polynomial differential forms $cal(P)_r Lambda^k$ for any degree $r$.]
 
   #set align(center)
-
-  WRITE AS SUBCOMPLEX
 
   #alternatives(
     $
@@ -654,32 +661,54 @@
     - Arbitrary topological manifolds
     - Arbitrary $k$-forms
     - Arbitrary polynomial degree FE solutions
-  - It is a theoretical framework for establishing well-posedness of PDE problems, by respecting co-/homology.
+  #only("2-")[
+  - A theoretical framework for establishing well-posedness of PDE problems, by respecting co-/homology.
+  ]
+  #only("3-")[
   - It is a manual for creating a FEM library of extreme generality.
-    - My bachelor's thesis:\ Rust Implementation of Finite Element Exterior Calculus on Coordinate-Free Simplicial Manifolds
+    - My bachelor's thesis:\ Rust Implementation of FEEC on Coordinate-Free Simplicial Manifolds
+  ]
 ]
 
 
 #slide[
+  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
+
   = Thank you for listening!
 
-  PUT A FORMONIQ PICTURE/ANIMATION AND QR CODE FOR FORMONIQ
-
-  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
   #set align(center + horizon)
-
   #block()[
     #set align(center)
     #set par(spacing: 10pt)
 
-    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
-      options: (
-        scale: 4.0,
-        fg-color: fgcolor,
-        bg-color: bgcolor,
-      )
+    #grid(
+      columns: (1fr, 1fr),
+      fill: black.transparentize(20%),
+      inset: 10pt,
+      [
+        Presentation Slides
+        #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
+          options: (
+            scale: 4.0,
+            fg-color: fgcolor,
+            bg-color: bgcolor,
+          )
+        )
+        #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
+      ],
+      [
+        My FEEC Library
+        #tiaoma.qrcode("https://github.com/luiswirth/formoniq",
+          options: (
+            scale: 4.0,
+            fg-color: fgcolor,
+            bg-color: bgcolor,
+          )
+        )
+        #weblink("https://github.com/luiswirth/formoniq", "github:luiswirth/formoniq")
+      ]
     )
-    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
+
   ]
 ]
 
