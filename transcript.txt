@@ -1,0 +1,210 @@
+Hello and welcome to this video all about finite element exterior calculus.
+This is the topic of my bachelor thesis and I want to give you a broad overview
+on this topic since there are seemingly no approachable resources on this
+topic, even though it is actually very cool. It probably helps to have some
+familiarity with the finite element method and it might even help if you've
+seen some concepts from differential geometry before. Let's get right into it.
+So, you can think of finite element exterior calculus as being a marriage of
+the two theories of the finite element method and of exterior calculus. And
+really it just means that we want to formulate them using differential forms.
+So differential forms are the object at study in exterior calculus. And FEEC,
+the shorthand for finite element exterior calculus, really tackles the weak
+variational form of the PDE and tries to solve PDEs in this framework. Exterior
+calculus, what is this exactly? So really you can think of this as being a
+model formulation of traditional vector calculus. And it is kind of calculus
+on Riemannian manifolds. So this is really rooted in differential geometry.
+And it unifies all the different kinds of integrals and derivatives you would
+find in vector calculus into basically just one object. And this generalizes
+then to arbitrary dimensions. Vector calculus sometimes is kind of limited
+to only two or three dimensions since in high dimensions things like the curl
+doesn't work anymore. So what is a differential form? A differential K-form is
+basically just an integrand, a K-dimensional integrand. For instance, we can
+have a 1-form living in the space of 1-forms and it is basically just a line
+integrand. You can integrate this over some curve. You can have a 2-form, which
+is an area integrand, which you can integrate over a surface. And you can have
+a 3-form, which is like a volume integrand, which you can integrate over a 3D
+patch of volume. And so a differential form then can just be integrated over a
+sub-manifold. And a differential K-form can be integrated over a K-dimensional
+sub-manifold. So you just write an integral sign and then the differential form
+directly comes because it has the coefficients and these differential terms
+with respect to which you are integrating. And you can kind of think of these
+differential K-forms as being K-dimensional rulers. These rulers vary across
+the manifold according to these coefficient functions we've seen in blue. And
+at each point specifically we have a fixed ruler, which locally measures the
+tangential K-vectors. And if we then do the whole integration, we globally
+measure the K-dimensional sub-manifold. So this is really a unified theory of
+integration for arbitrary dimensions. So after unifying integrals, we want to
+now unify derivatives. And there are really three central derivatives in vector
+calculus. The gradient, the curl, and the divergence. And they can all be
+written using basically just one derivative in exterior calculus, which is the
+exterior derivative. So these are unified. And if we now combine the unification
+of integrals and derivatives, we can even unify the main theorems from vector
+calculus. The gradient theorem, the curl theorem, the divergence theorem into
+just one, which is Stokes' theorem, saying that the integral over a manifold of
+the exterior derivative of a differential form is the same thing as taking the
+integral over the original differential form over the boundary of the manifold.
+And now, how would one do now finite element exterior calculus? Well, we really
+just need to generalize FEM with these differential forms and formulate PDEs
+with differential forms. First of all, we need to recognize, since we're now
+in the space of differential geometry, we have a more general PDE domain. It
+can be any Riemannian manifold. And FEEC allows us to treat domains of full
+topological generality, meaning we can have arbitrary number of holes, which
+is usually referred to as arbitrary k-Betti numbers. So the k-Betti numbers
+measures the number of k-dimensional holes. So we can solve PDEs on the surface
+of a sphere, on various tori, and so on. And we need to somehow discretize this
+domain to now actually do the finite element method. And this is by means of a
+mesh. And really, usually, one knows of these triangle meshes, which discretize
+surfaces. But surfaces are just two-dimensional. We, of course, need to
+discretize arbitrary dimensional manifolds. So we make use of something called
+the simplicial complex. So a simplex is just basically a generalization of a
+triangle to arbitrary dimensions. So in zero dimensions, you have just vertices.
+In 1D, you have edges. In 2D, you have triangles, as we know it. And in 3D, we
+have tetrahedra. And you can extend this arbitrarily. You always have n plus
+1 corners of an n-dimensional simple volume of a simplex. And the simplicial
+complex really contains all of these. So if we have a volume we're discretizing,
+we have tetrahedra. But in the simplicial complex, we also have the faces of
+the tetrahedron, so the triangles. And these have, if you take the boundary of
+the faces, you get the edges. And if you take the boundary of the edges, you get
+the vertices. And all of these are in the simplicial complex, which is always
+connected by this boundary operator. And now, to motivate what FEEC really
+generalizes, we need to first look at FEM in vector calculus. And in traditional
+courses on solving numerical partial differential equations, you usually treat
+only scalar-valued PDEs in a Lagrangian finite element context. But one could
+also have vector-valued PDEs, meaning the solution is a vector field. And
+a great example of this are Maxwell's equations, where we have an electric
+field and a magnetic field. And then we write the PDEs using these different
+operators. So in Lagrangian finite elements, you would usually use the gradient,
+since the gradient can be applied to a scalar function. And for vector fields,
+well, you apply the divergence and the curl. And in Lagrangian finite elements,
+you always formulate your variational problems on these function spaces, on
+these Sobolev spaces, of which the most common one is H1. The space of all
+scalar functions for which the gradient of the function is square integrable.
+But since we're now using also divergence and curl, we need Sobolev spaces for
+them. So how do they look like? Well, one could also call H1 just H grad, since
+this is the operator we're worried about. So we can also define H curl and H
+diff. Very easy. So this is the natural extension. And these spaces now have
+as elements vector fields. And these spaces are actually very connected. There
+is this theory of the de Rham complex, which is this rich algebraic structure
+connecting H(grad) with H(curl) and H(div), and eventually L^2. And these are
+connected by their respective derivatives. So the image of H grad under the
+gradient operator, well, it is contained in H curl. And the image of H curl
+under curl is contained in H diff. And the image of H div under div is in L2.
+And that is not all. If we apply a differential operator twice, we always get
+zero. So if we were to start with the gradient and then apply the curl, we get
+zero. And if we first take the curl and then the divergence, we also get zero.
+This is because if the images of a differential operator are in the kernel of
+the next differential operator. And this is this interesting structure. And this
+structure is really important. And we will see it come up a couple of times. So
+we now need to devise finite element spaces as discretization of these Sobolev
+spaces. They just need to be finite dimensional subspaces of these infinite
+dimensional function spaces. And these have been meticulously constructed.
+The one you're probably already familiar with is the Lagrangian finite element
+space with the Lagrangian basis functions, the 10 functions, on the vertices
+of the mesh. And it is a subspace of H grad. There is a subspace of H curl,
+which is called the Nédélec space. And there is a subspace of H div called the
+Raviart-Thomas space. And they also have basis elements. And these no longer
+live on the vertices. But the Nédélec live on the edges. And the Raviart-Thomas
+elements live on the faces of the mesh, interestingly. There is some underlying
+geometric structure here. And we'll see later on what it is. And in order to
+now get a good discretization of our Maxwell's equations, or any PDE, we need
+to respect the de Rham complex. Because it really dictates the structure of the
+PDE problem. And only if we respect it in our discretization, we will get the
+right solution. We will converge to the actual solution. And this means we not
+only need subspaces. No, we need subcomplexes. And such a subcomplex is formed
+by these finite element spaces we found so far. So the Lagrangian finite element
+space is connected with the Nédélec finite element space, which is connected
+with the Raviart-Thomas space. And lastly, the L2 space becomes the piecewise
+constant discontinuous finite element space. And this is actually a subcomplex
+of the original one. Which means, great, we have a good discretization. But for
+this, mathematicians needed to meticulously construct these spaces such that
+they fulfill this condition, which was kind of hard. And these spaces seem very
+separate, really. And this is because of vector calculus. Vector calculus makes
+a big distinction between these various sorts of derivatives. Exterior calculus
+doesn't. So can we achieve some unification here with exterior calculus? And
+can we maybe extend this to arbitrary dimensions? These differential operators
+from vector calculus, they really only work in 3D. Maybe also in 2D and 1D.
+But in 4D, it's really unclear what the curl should become. So let's look
+at what finite element exterior calculus does. So first of all, we need to
+rewrite Maxwell's equations such that they don't involve the derivatives from
+vector calculus. But they are written using differential forms. The electric
+field is a one-form. Because, and this is actually dual to a vector field.
+A vector field is a line field, as is also a one-form. It's one-dimensional.
+So this is completely normal. But the magnetic field, interestingly enough,
+is a two-form. So representing in vector calculus the magnetic field as a
+one-form is actually not really the way to go. This is not true to its real
+nature. And being a two-form, for instance, forbids magnetic monopoles such
+as physics does. So this represents a more truthful representation of physics.
+And now we only have these four equations which only involve one derivative,
+which is the exterior derivative. And we can go even further and make use
+of differential geometry once again. We can formulate Maxwell's equations in
+relativistic electrodynamics. Meaning we have these equations now on the 4D
+spacetime manifold treating arbitrary curvature of our 4D spacetime due to
+gravity. And we can just define two things, the Faraday two-form and the current
+three-form. And we're only left with two equations. So this framework is already
+very interesting since it gives us a more natural way of expressing Maxwell's
+equations. But this is not all. Since we only have one kind of derivative,
+the exterior derivative, we really only need one kind of Sobolev space. The
+Sobolev space of all differential k-forms for which their exterior derivative
+is square integrable. And this is a great unification. And furthermore, these
+are actually the same spaces as the grad, curl, and div Sobolev space. They are
+isomorphic. So the zero-forms correspond to the gradient space, the one-forms
+to curl space, and the two-forms to the divergence space. So we already unified
+these. Only thing changing is the index up here, which differential k-form it
+is. And actually, we therefore also get the same de Rham space complex. It is
+isomorphic to it. But now it is a lot more streamlined. We always only increase
+the k in the differential k-form. And all of the spaces are just connected by
+the exterior derivative. And this image being contained in the kernel of the
+next differential operator is now just the fact that applying the exterior
+derivative twice is zero. So this is very simple. And now we can make a very,
+very interesting connection, which lies at the heart of finite element exterior
+calculus. Remember our simplicial complex. This simplicial complex connects the
+various manifolds, the various sub-manifolds of our original manifold through
+the boundary operator. So if we're in a three-dimensional space, we can take of
+any sub-manifold the boundary, getting us a two-dimensional manifold, and then
+a one-dimensional manifold, and so on. And this also forms a complex. And it is
+connected by the boundary operator, which also application of it twice leads to
+zero. So this seems very, very similar. So why is that? Well, really, this is
+a very deep discovery on the connection between the topology of the mesh or the
+manifold and the calculus structure of our PDE problem. And this is called the
+connection between homology and cohomology. And if we respect this connection,
+well, only then we can treat PDE domains of arbitrary topological generality.
+And furthermore, not only do we have only one Sobolev space, we only, of
+course, only have one kind of finite element space. The space of Whitney
+k-forms, which are differential forms, which are piecewise linear over cells.
+OK, so this is the most simple one corresponding, for instance, to first-order
+Lagrangian finite elements. And the functions, the basis functions, live on
+the corresponding simplex of the same dimension. So if you have a differential
+k-form, the simplices, the basis functions live on the k-simplices of the mesh.
+So this is here a connection between geometry and the differential structure.
+And this discretization of placing them there really respects this connection
+between homology and cohomology. So the Lagrangian finite elements are here
+the Whitney 0-forms, the Nédélec elements are the Whitney 1-forms, and the
+Raviart-Thomas are the Whitney 2-forms. And this explains why these live on the
+vertices, the edges, and the faces, respectively. Because they're the index of
+the geometry dimension, and the Whitney k-form agree. And here again, we need to
+look for a subcomplex, and the Whitney k-forms do form such a subcomplex, which
+has the same properties giving rise to a good discretization. And more, there is
+even more. This is very asymmetric construction. We can extend this to arbitrary
+dimensions. You can just increase k on and on, and you can just connect these
+Sobolev spaces or Whitney k-form spaces by the exterior derivative. So there is
+a very natural extension to arbitrary dimensions here. And furthermore, as it
+is common in finite elements, there is not just piecewise linear approximations
+of PDE solutions. No, we can find arbitrarily polynomial degree solutions to our
+discretized PDEs. So we have these spaces of piecewise polynomial differential
+forms for any degree R. So this is extremely general. So to recap, what is FEEC?
+Well, it is one thing for sure. It is extremely general. It supports arbitrary
+dimensions, arbitrary topological manifolds, arbitrary k-forms, and arbitrary
+polynomial degree finite element solutions. It is a theoretical framework
+which is very math-heavy for establishing the well-posedness of PDE problems by
+respecting the co- and homology. And this is basically one of the best theories
+probably for getting actually devising methods that actually converge to the
+right solutions of PDEs. And lastly, it is not only a theoretical framework, but
+is a manual for creating a FEM library of the same generality as FEEC. And this
+is now exactly my bachelor thesis. I'm trying to write a Rust implementation of
+finite element exterior calculus on coordinate-free simplicial manifolds. And
+this is what I'll be working on. And I hope to create some more videos on these
+topics, especially with regards to how to implement this. Thank you so much for
+watching. If you want to find the slides which are written in Typst, this new
+language, this new typesetting language, which might be the successor to LaTeX,
+you can find them on GitHub. And if you want to take a look at my Rust FEEC
+library, you can also find it on GitHub. Thank you for listening. And goodbye.
