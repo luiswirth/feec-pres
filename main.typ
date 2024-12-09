@@ -5,20 +5,23 @@
 
 #let fgcolor = white
 #let bgcolor = black
-#set text(fill: fgcolor)
-#set page(fill: bgcolor)
 
 #let lwirth-theme(
-  content_color,
+  fgcolor,
   bgcolor,
   ..args,
   body,
 ) = {
   set text(font: "New Computer Modern Sans")
   set text(size: 23pt)
+  set text(fill: fgcolor)
 
   show: touying-slides.with(
-    config-page(paper: "presentation-16-9", margin: 1.5cm, fill: bgcolor),
+    config-page(
+      paper: "presentation-16-9",
+      fill: bgcolor,
+      margin: (left: 1.5cm, right: 1.5cm, top: 1.0cm, bottom: 0.1cm),
+    ),
     config-common(
       slide-fn: slide,
     ),
@@ -35,29 +38,14 @@
 
 
 #let weblink(..args) = text(
-    fill: blue,
-    link(..args)
-  )
+  //fill: blue,
+  link(..args)
+)
 
 #let snote(content) = [
   #set text(20pt)
   #content
 ]
-
-//#show raw.where(block: false): box.with(
-//  //fill: black.lighten(10%),
-//  //stroke: black.lighten(10%),
-//  inset: (x: 3pt, y: 0pt),
-//  outset: (y: 5pt),
-//  radius: 4pt,
-//)
-//#show raw.where(block: true): block.with(
-//  fill: black.lighten(5%),
-//  inset: (x: 3pt, y: 0pt),
-//  outset: 5pt,
-//  radius: 4pt,
-//)
-
 
 #set math.mat(delim: "[")
 #set math.vec(delim: "[")
@@ -92,56 +80,28 @@
 
 #let mesh = $cal(M)$
 
-// Hello and Welcome. Paper Title and Authors
-#page(
-  background: image("res/bg-vibrant.jpg", width: 100%),
-  margin: 2cm,
-)[
-  #box(
+
+#slide[
+  #set page(background: image("res/bg-vibrant.jpg", fit: "cover"))
+  #set align(center)
+
+  #v(1cm)
+  
+  #block(
     fill: black.transparentize(20%),
     outset: 20pt,
     radius: 0pt,
   )[
-  #set align(center)
     
     #[
       #set text(size: 35pt, weight: "bold")
-      #set par(spacing: 5mm)
 
-      Finite Element Exterior Calculus,\
-      Homological Techniques, and Applications
-    ]
-
-    #[
-      #set text(size: 25pt)
-      2006
-    ]
-  
-    #[
-      #set text(size: 20pt)
-      #grid(
-        columns: (1fr, 1fr, 1fr),
-        align: center,
-        [
-          #smallcaps[Douglas N. Arnold]\
-          University of Minnesota\
-          #weblink("mailto:arnold@ima.umn.edu")
-        ],
-        [
-          #smallcaps[Richard S. Falk]\
-          Rutgers University\
-          #weblink("mailto:falk@math.rutgers.edu")
-        ],
-        [
-          #smallcaps[Ragnar Winther]\
-          University of Oslo\
-          #weblink("mailto:ragnar.winther@cma.uio.no")
-        ]
-      )
+      Finite Element Exterior Calculus
     ]
 
     #v(1cm)
-    Presented by #smallcaps[Luis Wirth]\
+    #smallcaps[Luis Wirth]\
+    ETH Zürich\
     #weblink("luwirth@ethz.ch")\
     #weblink("lwirth.com")
   ]
@@ -149,7 +109,7 @@
 
 #slide[
   = Finite Element Exterior Calculus
-  #snote[Connects to last case study with Felicia Scharitzer.]
+  #v(0.5cm)
 
   - Marriage of Finite Element Method and Exterior Calculus
   - FEM formulated using Differential Forms
@@ -219,44 +179,7 @@
   - ruler $omega: p in Omega |-> omega_p$ varies continuously  across manifold according to #text(blue.lighten(20%))[coefficent functions]
   - locally measures tangential $k$-vectors $omega_p: (T_p M)^k -> RR$
   - globally measures $k$-dimensional submanifold $integral_M omega in RR$
-
-  //#v(1cm)
-  //$
-  //  phi: [0,1]^k -> Omega
-  //  quad quad
-  //  M = "Image" phi
-  //  \
-  //  integral_M omega =
-  //  limits(integral dots.c integral)_([0,1]^k) quad
-  //  omega_(avec(phi)(t))
-  //  ((diff avec(phi))/(diff t_1) wedge dots.c wedge (diff avec(phi))/(diff t_k))
-  //  dif t_1 dots dif t_k
-  //$
 ]
-
-//#slide[ 
-//  = $k$-Vectors?
-//  #snote[What's that now?]
-//
-//  - Generalization of vectors (1-dimensional oriented line segment)
-//  - Oriented $k$-dimensional segments
-//
-//  #v(0.5cm)
-//
-//  #set par(spacing: 6pt)
-//  #grid(
-//    //stroke: 1pt + white,
-//    columns: (1fr, 1fr),
-//    align: center + horizon,
-//    [
-//      Bivector / 2-vector
-//      #image("res/bivector-in-3d.svg", height: 50%)
-//    ], [
-//      Trivector / 3-vector
-//      #image("res/trivector-in-3d.svg", height: 50%)
-//    ]
-//  )
-//]
 
 #slide[
   // Unification of derivatives from vector calculus
@@ -344,14 +267,13 @@
     image("res/torus.png"),
   )
 
-  //$
-  //  0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
-  //$
+  $  
+    0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
+  $
+
 ]
 
 #slide[
-  #set page(margin: (bottom: 0cm))
-
   = Mesh
   #v(1cm)
 
@@ -360,7 +282,7 @@
     [
       - Discretize PDE Domain
       - Obtain Simplicial Complex $mesh$ by triangulating manifold $Omega$
-      - Contains all $k$-dim simplicies $Delta^k (mesh)$
+      - Contains all $k$-dim simplicies $Delta_k (mesh)$
       - Preserve topology and geometry of continuous manifold
     ], [
       #set align(center + horizon)
@@ -372,7 +294,7 @@
   #set block(below: 1pt)
   #image("res/simplices.png", width: 80%)
   $
-    0 limits(<--)^diff #h(1cm) Delta^0 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^1 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^2 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^3 (mesh) #h(1cm) limits(<--)^diff 0
+    0 limits(<--)^diff #h(1cm) Delta_0 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta_1 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta_2 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta_3 (mesh) #h(1cm) limits(<--)^diff_0
   $
 ]
 
@@ -380,7 +302,7 @@
   = FEM in Vector-Calculus
   #snote[To motivate FEEC]
 
-  NumPDE: Mostly scalar-valued PDEs $u: Omega -> RR$ \
+  NumPDE course: Mostly scalar-valued PDEs $u: Omega -> RR$ \
   But we could also have a vector-valued $avec(u): Omega -> RR^3$.
   #pause
 
@@ -441,14 +363,6 @@
     quad quad
     div compose curl = 0
   $
-
-  //#diagram(
-  //  edge-stroke: fgcolor,
-  //  cell-size: 15mm,
-  //  $
-  //    0 edge(->) &H(grad; Omega) edge(grad, ->) &Hvec (curl; Omega) edge(curl, ->) &Hvec (div; Omega) edge(div, ->) &L^2(Omega) edge(->) &0
-  //  $
-  //)
 ]
 
 #slide[
@@ -467,9 +381,9 @@
       &Hvec (div ; Omega) &&supset.eq bold(cal(R T)) (mesh) \
     $,
     [
-      - Lagrangian basis on vertices $Delta^0 (mesh)$
-      - Nédélec basis on edges $Delta^1 (mesh)$
-      - Raviart-Thomas basis on faces $Delta^2 (mesh)$
+      - Lagrangian basis on vertices $Delta_0 (mesh)$
+      - Nédélec basis on edges $Delta_1 (mesh)$
+      - Raviart-Thomas basis on faces $Delta_2 (mesh)$
     ]
   )
 ]
@@ -571,12 +485,16 @@
   
   $
     0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
+    \
+    dif^2 = dif compose dif = 0
   $
   #pause
 
-  Connected to simplicial complex\
+  Connected to continuous chain complex\
   $
-    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
+    0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
+    \
+    diff^2 = diff compose diff = 0
   $
   #pause
 
@@ -591,20 +509,20 @@
   - Only one type of Sobolev space: $H Lambda^k (Omega)$
     - Only one kind of FE Space!
   - Space of Whitney $k$-forms:
-  - Piecewise-linear #text(blue)[coefficents] over cells $Delta^n (mesh)$
+  - Piecewise-linear #text(blue)[coefficents] over cells $Delta_n (mesh)$
   #pause
   
   $
-    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in Delta^k (mesh)}
+    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in Delta_k (mesh)}
   $
 
   #grid(
     columns: (50%, 50%),
     align: center + horizon,
     only("3-")[
-      - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta^0 (mesh)$
-      - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta^1 (mesh)$
-      - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta^2 (mesh)$
+      - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta_0 (mesh)$
+      - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta_1 (mesh)$
+      - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta_2 (mesh)$
     ],
     only("4-")[$
       cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
@@ -627,6 +545,13 @@
 
   $
     0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
+  $
+
+  
+  $
+    0 limits(<-)^diff Delta_0 (mesh) limits(<-)^diff Delta_1 (mesh) limits(<-)^diff Delta_2 (mesh) limits(<-)^diff Delta_3 (mesh) limits(<-)^diff 0
+    \
+    diff^2 = diff compose diff = 0
   $
 ]
 
@@ -673,8 +598,6 @@
 
 
 #slide[
-  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
-
   = Thank you for listening!
 
   #set align(center + horizon)
@@ -682,173 +605,36 @@
     #set align(center)
     #set par(spacing: 10pt)
 
-    Presentation Slides
-    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
-      options: (
-        scale: 4.0,
-        fg-color: fgcolor,
-        bg-color: bgcolor,
-      )
+
+    #grid(
+      columns: (50%, 50%),
+      [
+      Presentation Slides
+      #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
+        options: (
+          scale: 4.0,
+          fg-color: fgcolor,
+          bg-color: bgcolor,
+        )
     )
-    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
+    #weblink(
+      "https://github.com/luiswirth/feec-pres",
+      "github:luiswirth/feec-pres"
+    )
+    ], [
+      Rust FEEC Library
+      #tiaoma.qrcode("https://github.com/luiswirth/formoniq",
+        options: (
+          scale: 4.0,
+          fg-color: fgcolor,
+          bg-color: bgcolor,
+        )
+      )
+      #weblink(
+        "https://github.com/luiswirth/formoniq",
+        "github:luiswirth/formoniq"
+      )
+    ])
   ]
 ]
-
-
-#slide[
-  = Hodge-Laplace Problem
-  #snote[Generalization of prototypical Poisson equation]
-
-  $
-    Delta u = f
-  $
-
-  Now $u$ and $f$ are Differential $k$-forms.
-  $
-    u in Lambda^k (Omega), f in Lambda^k (Omega)
-  $
-
-  And the Laplacian becomes the Hodge-Laplace operator.
-  $
-    Delta: Lambda^k (Omega) -> Lambda^k (Omega)
-    \
-    Delta = dif delta + delta dif
-  $
-]
-
-#slide[
-  = Coderivative Operator
-
-  Coderivative operator $delta: Lambda^k (Omega) -> Lambda^(k-1) (Omega)$
-  defined such that
-  $
-    star delta omega = (-1)^k dif star omega
-  $
-]
-
-#slide[
-  = Weak Variational Form
-  #v(1cm)
-
-  In order to do FEM, we need to change from the strong PDE form into the weark variational form.
-
-  We need to form the $L^2$-inner product with a test "function" $v in Lambda^k (Omega)$.
-
-  The inner product is defined as
-  $
-    inner(omega, eta)_(L^2 Lambda^k)
-    =
-    integral_Omega inner(omega_x, eta_x) "vol"
-    =
-    integral omega wedge star eta
-  $
-]
-
-#slide[
-  = Integrate against Test function
-
-  Take strong form and form $L^2$-inner product with test function $v$
-  $
-    Delta u = f
-  $
-
-  We obtain the variational equation
-  $
-    u in H Lambda^k (Omega): quad quad
-    inner(Delta u, v) = inner(f, v)
-    quad quad forall v in H Lambda^k (Omega)
-  $
-
-  Or in integral form
-  $
-    integral_Omega ((dif delta + delta dif) u) wedge star v = integral_Omega f wedge star v
-  $
-]
-
-#slide[
-  = Integration by Parts
-
-  $
-    integral_Omega dif omega wedge eta
-    =
-    (-1)^(k-1)
-    integral_Omega omega wedge dif eta
-    +
-    integral_(diff Omega) "Tr" omega wedge "Tr" eta
-  $
-
-  $
-    inner(dif omega, eta) = inner(omega, delta eta) + integral_(diff Omega) "Tr" omega wedge "Tr" star eta
-  $
-
-  If $omega$ or $eta$ vanishes on the boundary, then
-  $delta$ is the formal adjoint of $dif$ w.r.t. the $L^2$-inner product.
-  $
-    inner(dif omega, eta) = inner(omega, delta eta)
-  $
-
-  $
-    inner(Delta u, v) = inner(f, v)
-    \
-    inner((dif delta + delta dif) u, v) = inner(f, v)
-    \
-    inner((dif delta + delta dif) u, v) = inner(f, v)
-    \
-    inner(dif delta u, v) + inner(delta dif u, v) = inner(f, v)
-    \
-    inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
-  $
-
-  #v(1cm)
-
-  $
-    u in H Lambda^k (Omega): quad quad
-    inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
-    quad
-    forall v in H Lambda^k (Omega)
-  $
-
-  $
-    u in H Lambda^k (Omega): quad
-    integral_Omega (delta u) wedge star (delta v) + integral_Omega (dif u) wedge star (dif v) = integral_Omega f wedge star v
-    quad
-    forall v in H Lambda^k (Omega)
-  $
-]
-
-#slide[
-  #set text(18pt)
-  $
-    u_h = sum_(i=1)^N mu_i phi_i
-    quad quad
-    v_h = phi_j
-  $
-
-  $
-    u in H Lambda^k (Omega): quad quad
-    inner(delta u, delta v) + inner(dif u, dif v) = inner(f, v)
-    quad quad forall v in H Lambda^k (Omega)
-  $
-  $
-    vvec(mu) in RR^N: quad
-    sum_(i=1)^N mu_i (integral_Omega (delta phi_i) wedge star (delta phi_j) + integral_Omega (dif phi_i) wedge star (dif phi_j))
-    =
-    sum_(i=1)^N mu_i integral_Omega f wedge star phi_j
-    quad forall j in {1,dots,N}
-  $
-
-  $
-    amat(A) vvec(mu) = 0
-    \
-    A =
-    [integral_Omega (delta phi_i) wedge star (delta phi_j)]_(i,j=1)^N
-    +
-    [integral_Omega (dif phi_i) wedge star (dif phi_j)]_(i,j=1)^N
-    \
-    vvec(phi) = [integral_Omega f wedge star phi_j]_(j=1)^N
-  $
-]
-
-
-
 
