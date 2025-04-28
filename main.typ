@@ -5,20 +5,23 @@
 
 #let fgcolor = white
 #let bgcolor = black
-#set text(fill: fgcolor)
-#set page(fill: bgcolor)
 
 #let lwirth-theme(
-  content_color,
+  fgcolor,
   bgcolor,
   ..args,
   body,
 ) = {
   set text(font: "New Computer Modern Sans")
   set text(size: 23pt)
+  set text(fill: fgcolor)
 
   show: touying-slides.with(
-    config-page(paper: "presentation-16-9", margin: 1.5cm, fill: bgcolor),
+    config-page(
+      paper: "presentation-16-9",
+      fill: bgcolor,
+      margin: (left: 1.5cm, right: 1.5cm, top: 1.0cm, bottom: 0.1cm),
+    ),
     config-common(
       slide-fn: slide,
     ),
@@ -92,9 +95,8 @@
 
 #let mesh = $cal(M)$
 
-// Hello and Welcome. Paper Title and Authors
 #page(
-  background: image("res/bg-vibrant.jpg", width: 100%),
+  background: image("res/bg-vibrant.jpg", fit: "cover"),
   margin: 2cm,
 )[
   #box(
@@ -102,7 +104,7 @@
     outset: 20pt,
     radius: 0pt,
   )[
-  #set align(center)
+    #set align(center)
     
     #[
       #set text(size: 35pt, weight: "bold")
@@ -344,14 +346,13 @@
     image("res/torus.png"),
   )
 
-  //$
-  //  0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
-  //$
+  $  
+    0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
+  $
+
 ]
 
 #slide[
-  #set page(margin: (bottom: 0cm))
-
   = Mesh
   #v(1cm)
 
@@ -360,7 +361,7 @@
     [
       - Discretize PDE Domain
       - Obtain Simplicial Complex $mesh$ by triangulating manifold $Omega$
-      - Contains all $k$-dim simplicies $Delta^k (mesh)$
+      - Contains all $k$-dim simplicies $Delta_k (mesh)$
       - Preserve topology and geometry of continuous manifold
     ], [
       #set align(center + horizon)
@@ -372,7 +373,7 @@
   #set block(below: 1pt)
   #image("res/simplices.png", width: 80%)
   $
-    0 limits(<--)^diff #h(1cm) Delta^0 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^1 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^2 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta^3 (mesh) #h(1cm) limits(<--)^diff 0
+    0 limits(<--)^diff #h(1cm) Delta_0 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta_1 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta_2 (mesh) #h(1cm) limits(<--)^diff #h(1cm) Delta_3 (mesh) #h(1cm) limits(<--)^diff_0
   $
 ]
 
@@ -467,9 +468,9 @@
       &Hvec (div ; Omega) &&supset.eq bold(cal(R T)) (mesh) \
     $,
     [
-      - Lagrangian basis on vertices $Delta^0 (mesh)$
-      - Nédélec basis on edges $Delta^1 (mesh)$
-      - Raviart-Thomas basis on faces $Delta^2 (mesh)$
+      - Lagrangian basis on vertices $Delta_0 (mesh)$
+      - Nédélec basis on edges $Delta_1 (mesh)$
+      - Raviart-Thomas basis on faces $Delta_2 (mesh)$
     ]
   )
 ]
@@ -571,12 +572,16 @@
   
   $
     0 -> H Lambda^0 (Omega) limits(->)^dif H Lambda^1 (Omega) limits(->)^dif H Lambda^2 limits(->)^dif H Lambda^3 (Omega) -> 0
+    \
+    dif^2 = dif compose dif = 0
   $
   #pause
 
-  Connected to simplicial complex\
+  Connected to continuous chain complex\
   $
-    0 limits(<-)^diff Delta^0 (mesh) limits(<-)^diff Delta^1 (mesh) limits(<-)^diff Delta^2 (mesh) limits(<-)^diff Delta^3 (mesh) limits(<-)^diff 0
+    0 limits(<-)^diff C_0 (Omega) limits(<-)^diff C_1 (Omega) limits(<-)^diff C_2 (Omega) limits(<-)^diff C_3 (Omega) limits(<-)^diff 0
+    \
+    diff^2 = diff compose diff = 0
   $
   #pause
 
@@ -591,20 +596,20 @@
   - Only one type of Sobolev space: $H Lambda^k (Omega)$
     - Only one kind of FE Space!
   - Space of Whitney $k$-forms:
-  - Piecewise-linear #text(blue)[coefficents] over cells $Delta^n (mesh)$
+  - Piecewise-linear #text(blue)[coefficents] over cells $Delta_n (mesh)$
   #pause
   
   $
-    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in Delta^k (mesh)}
+    cal(W) Lambda^k (mesh) = "span" {lambda_sigma : sigma in Delta_k (mesh)}
   $
 
   #grid(
     columns: (50%, 50%),
     align: center + horizon,
     only("3-")[
-      - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta^0 (mesh)$
-      - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta^1 (mesh)$
-      - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta^2 (mesh)$
+      - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta_0 (mesh)$
+      - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta_1 (mesh)$
+      - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta_2 (mesh)$
     ],
     only("4-")[$
       cal(W) Lambda^0 (mesh) &=^~ cal(S)^0_1 (mesh) \
@@ -627,6 +632,13 @@
 
   $
     0 -> cal(W) Lambda^0 (mesh) limits(->)^dif cal(W) Lambda^1 (mesh) limits(->)^dif cal(W) Lambda^2 (mesh) limits(->)^dif cal(W) Lambda^3 (mesh) -> 0
+  $
+
+  
+  $
+    0 limits(<-)^diff Delta_0 (mesh) limits(<-)^diff Delta_1 (mesh) limits(<-)^diff Delta_2 (mesh) limits(<-)^diff Delta_3 (mesh) limits(<-)^diff 0
+    \
+    diff^2 = diff compose diff = 0
   $
 ]
 
@@ -817,6 +829,7 @@
 ]
 
 #slide[
+  Galerkin Discretization
   #set text(18pt)
   $
     u_h = sum_(i=1)^N mu_i phi_i
@@ -849,6 +862,49 @@
   $
 ]
 
+#slide[
+  = Exterior Derivative
+  #v(1cm)
 
+  Purely topological, no geometry.
 
+  In discrete settings defined as coboundary operator, through Stokes' theorem.\
+  So the discrete exterior derivative is just the transpose of the boundary operator / incidence matrix.
+]
 
+#slide[
+  = Hodge Star operator
+  #v(1cm)
+
+  Defined such that:
+  $ alpha wedge star alpha = "vol" $
+]
+
+#slide[
+  = Whitney Forms
+  #v(1cm)
+
+  Hat means omitted.
+  $
+    cal(W)[v_i] = lambda_i
+    \
+    cal(W)[v_0,dots,v_k] = k! sum_(i=0)^k (-1)^i lambda_i (dif lambda_0 wedge dots.c wedge hat(dif lambda_i) wedge dots.c lambda_k)
+  $
+
+  Some expansions:
+  $
+    cal(W)[v_0 v_1] =
+    &lambda_0 dif lambda_1 - lambda_1 dif lambda_0
+    \
+    cal(W)[v_0 v_1 v_2] =
+      &2 lambda_0 (dif lambda_1 wedge dif lambda_2) \
+    - &2 lambda_1 (dif lambda_0 wedge lambda_2) \
+    + &2 lambda_2 (dif lambda_0 wedge dif lambda_1) \
+    \
+    cal(W)[v_0,v_1,v_2,v_3] =
+      &6 lambda_0 (dif lambda_1 wedge dif lambda_2 wedge dif lambda_3) \
+    - &6 lambda_1 (dif lambda_0 wedge lambda_2 wedge lambda_3) \
+    + &6 lambda_2 (dif lambda_0 wedge dif lambda_1 wedge dif lambda_3) \
+    - &6 lambda_3 (dif lambda_0 wedge dif lambda_1 wedge dif lambda_2) \
+  $
+]
