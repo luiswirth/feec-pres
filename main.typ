@@ -99,201 +99,18 @@
   - Used to solve PDEs by tackling weak variational form.
 ]
 
-#slide[
-  = Weak Variational Form & $L^2$ Inner Product
-  #v(1cm)
-
-  FEM needs variational formulation.
-
-  The inner product is defined as
-  $
-    inner(omega, eta)_(L^2 Lambda^k (Omega))
-    := integral_Omega inner(omega_x, eta_x)_(Lambda^k) vol_g
-    = integral_Omega omega wedge hodge eta
-  $
-]
 
 
 #slide[
-  = Sobolev Space of Differential Forms
-  #v(1cm)
-
-  $
-    H Lambda^k (Omega) = { omega in L^2 Lambda^k (Omega) mid(|) dif omega in L^2 Lambda^(k+1) (Omega) }
-  $
-
-  $
-     H Lambda^0 (Omega) &=^~ H    (grad; Omega) = H^1 (Omega) \
-     H Lambda^1 (Omega) &=^~ Hvec (curl; Omega) \
-     H Lambda^2 (Omega) &=^~ Hvec (div ; Omega) \
-  $
-]
-
-#slide[
-  = de Rham Complex of Differential Forms
-  #v(1cm)
-
-  $
-    0 -> H Lambda^0 (Omega) limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega) -> 0
-    \
-    dif^2 = dif compose dif = 0
-  $
-]
-
-#slide[
-  = Hodge-Laplace Operator
-  #snote[Generalization of prototypical Poisson equation]
-
-  $
-    Delta^k u = f
-  $
-
-  Now $u$ and $f$ are Differential $k$-forms.
-  $
-    u in Lambda^k (Omega), f in Lambda^k (Omega)
-  $
-
-  And the Laplacian becomes the Hodge-Laplace operator.
-  $
-    Delta^k: Lambda^k (Omega) -> Lambda^k (Omega)
-    \
-    Delta^k := delta dif + dif delta =  delta^(k+1) dif^k + dif^(k-1) delta^k
-  $
-]
-
-
-#slide[
-  = Coderivative Operator
-
-  Coderivative operator $delta: Lambda^k (Omega) -> Lambda^(k-1) (Omega)$
-
-  $L^2$-adjoint of exterior derivative
-  $
-    delta = dif^*
-    \
-    inner(dif omega, eta)_(L^2) = inner(omega, delta eta)_(L^2)
-  $
-
-  $
-    grad^* &= -div \
-    curl^* &= curl \
-    div^* &= -grad \
-  $
-
-]
-
-
-#slide[
-  = Hodge-Laplace in $(RR^3; times, dot)$
-  #v(0.5cm)
-
-  $
-    0 -> H(grad) ->^grad Hvec(curl) ->^curl Hvec(div) ->^div L^2 -> 0
-    \
-    0 <- L^2 <-^(-div) H0vec(div) <-^curl H0vec(curl) <-^(-grad) H0(grad) <- 0
-  $
-  
-  #[
-    #set align(center)
-    #set text(17pt)
-    #table(
-      columns: 6,
-      align: center,
-      //stroke: (x, y) => if y == 0 {(bottom: fgcolor)},
-      stroke: fgcolor,
-      table.header($k$, $Delta^k = delta dif + dif delta$, $tilde(Delta)^k = inner(dif, dif) + inner(delta, delta)$, [natural BC], [essential BC], $V^(k-1) times V^k$),
-      $0$, $-div grad + 0$, $inner(grad, grad) + 0$, $diff u\/diff n$, [-], $H(grad)$,
-      $1$, $curl curl - grad div$, $inner(curl, curl) + inner(div, div)$, $curl u times n$, $u dot n$, $H(grad) times Hvec(curl)$,
-      $2$, $-grad div + curl curl$, $inner(div, div) + inner(curl, curl)$, $div u$, $u times n$, $Hvec(curl) times Hvec(div)$,
-      $3$, $0 -div grad$, $0 + inner(grad, grad)$, [-], $u$, $H(div) times L^2$,
-    )
-  ]
-
-  $k=0$: Scalar Laplacian w/ Neumann B.C. \
-  $k=1$: Vector Laplacian w/ Magnetic B.C. \
-  $k=2$: Vector Laplacian w/ Electric B.C. \
-  $k=3$: Scalar Laplacian w/ Dirichlet B.C. \
-]
-
-
-
-#slide[
-  = Integrate against Test function
-
-  Take strong form and form $L^2$-inner product with test function $v$
-  $
-    Delta u = f
-  $
-
-  We obtain the variational equation
-  $
-    u in H Lambda^k (Omega): quad quad
-    inner(Delta u, v)_(L^2 Lambda^k (Omega)) = inner(f, v)_(L^2 Lambda^k (Omega))
-    quad quad forall v in H Lambda^k (Omega)
-  $
-
-  $
-    u in H Lambda^k (Omega): quad quad
-    inner(dif u, dif v) + inner(delta u, delta v) = inner(f, v)
-    quad quad forall v in H Lambda^k (Omega)
-  $
-]
-
-#slide[
-  = Integration by Parts
-
-  $
-    inner(dif omega, eta) = inner(omega, delta eta) + integral_(diff Omega) tr omega wedge tr hodge eta
-  $
-
-  If $omega$ or $eta$ vanishes on the boundary, then
-  $delta$ is the formal adjoint of $dif$ w.r.t. the $L^2$-inner product.
-  $
-    inner(dif omega, eta) = inner(omega, delta eta)
-  $
-]
-
-#slide[
-  = Mixed Strong Hodge-Laplace Source Problem
-  $
-    sigma = delta u, quad dif sigma + delta dif u = f - p quad "in" Omega
-    \
-    tr hodge u = 0, quad tr hodge dif u = 0 quad "on" diff Omega
-    \
-    u perp frak(H)^k
-  $
-]
-
-#slide[
-  = Mixed Weak Hodge-Laplace Source Problem
-  #v(0.5cm)
-
-  Given $f in L^2 Lambda^k$, find $(sigma,u,p) in (H Lambda^(k-1) times H Lambda^k times frak(H)^k)$ s.t.
-  $
-    inner(sigma,tau) - inner(u,dif tau) &= 0
-    quad &&forall tau in H Lambda^(k-1)
-    \
-    inner(dif sigma,v) + inner(dif u,dif v) + inner(p,v) &= inner(f,v)
-    quad &&forall v in H Lambda^k
-    \
-    inner(u,q) &= 0
-    quad &&forall q in frak(H)^k
-  $
-]
-
-
-#slide[
-  = My Implementation
+  = My Implementation: Formoniq
   #v(0.5cm)
 
   Goals:
-  - Arbitrary dimension $n$
-  - Arbitrary differential $k$-form
-  - Non-Trivial Topologies
+  - Embrace Differential Geometry
+  - Arbitrary dimension
+  - Arbitrary rank differential forms
+  - Non-Trivial Topologies (Cohomology)
   - Intrinsic geometry via Riemannian Metric
-
-  Using:
-  - 1st order Whitney Forms
 ]
 
 #slide[
@@ -301,8 +118,8 @@
   #v(1cm)
 
   - PDE Domain is Riemannian Manifold $Omega$
-  - Treating Domains of full topological generality (arbitrary Betti numbers)
-  - $k$-th Betti numbers = number of $k$-dim holes
+  - Treating non-trivial domains (arbitrary Betti numbers)
+  - Betti number $beta_k =$ number of $k$-dim holes
 
   #grid(
     columns: (50%, 50%), 
@@ -313,7 +130,7 @@
 ]
 
 #slide[
-  = Mesh as Simplicical Manifold
+  = Mesh as Simplical Manifold
   #v(1cm)
 
   #grid(
@@ -327,10 +144,6 @@
       #image("res/moebius.png")
     ]
   )
-
-  #set align(center)
-  #set block(below: 1pt)
-  #image("res/simplices.png", width: 80%)
 ]
 
 
@@ -346,24 +159,21 @@
       quad lambda^i >= 0,
       quad sum_(i=0)^n lambda^i = 1
     }
-  $ 
-]
+  $
 
-#slide[
-  = Drop the Coordinates!
-
-  We want to get rid of coordinates.
-
-  Use abstract simplicies to define topology only!
-
-  Afterwards Geometry seperatly introduced.
+  - A 0-simplex is a point.
+  - A 1-simplex is a line segment.
+  - A 2-simplex is a triangle.
+  - A 3-simplex is a tetrahedron.
 ]
 
 #slide[
   = Coordiante-Free Abstract Simplex
+  #snote[Drop the Coordinates!]
 
   - Only Combinatorics
   - Defines Topology
+  - No Geometry
 
   $
     sigma = [v_0,...,v_n] in NN^(n+1)
@@ -371,6 +181,9 @@
     v_i in NN
   $
 
+  Two orientations: Even and Odd Permutations
+
+  Boundary operator
   $
     diff sigma = sum_(i=0)^n (-1)^i [v_0,...,hat(v)_i,...,v_n]
   $
@@ -378,9 +191,9 @@
 
 #slide[
   = Simplicial Complex
+  #snote[All subsimplicies]
 
-  - Obtain Simplicial Complex $mesh$
-  - Contains all $k$-dim simplicies $Delta_k (mesh)$
+  Simplicial Complex $cal(K)$ contains all $k$-dim subsimplicies $Delta_k (mesh), quad k <= n$
 
   
   #set align(center)
@@ -394,19 +207,28 @@
 #slide[
   = Simplicial Chain Complex
 
+  Chain $c in C_k$ is linear combination of simplicies.
+
   $
-    0 limits(<-)^diff Delta_0 (mesh) limits(<-)^diff Delta_1 (mesh) limits(<-)^diff Delta_2 (mesh) limits(<-)^diff Delta_3 (mesh) limits(<-)^diff 0
+    0 limits(<-)^diff C_0 (mesh) limits(<-)^diff C_1 (mesh) limits(<-)^diff C_2 (mesh) limits(<-)^diff C_3 (mesh) limits(<-)^diff 0
     \
     diff^2 = diff compose diff = 0
+  $
+
+  Boundary Operator
+  $
+    diff_k: C_k (mesh) -> C_(k-1) (mesh)
+  $
+
+  Simplicial Homology $cal(H)_k = (ker diff_k)/(im diff_k)$
+
+  $
+    "Betti number" beta_k = dim cal(H)_k
   $
 ]
 
 #slide[
-  = Boundary Operator
-
-  $
-    diff_k: Delta_k (mesh) -> Delta_(k-1) (mesh)
-  $
+  = Computational Boundary Operator
 
   Signed Incidence Matrix
   $
@@ -440,9 +262,25 @@
   #v(0.5cm)
 
   $
-    amat(G)_(i j) = g_p (restr(diff/(diff x^i))_p,restr(diff/(diff x^j))_p)
+    g_p: T_p M times T_p M -> RR^+
   $
 
+  Gives Geometry
+  - lengths $norm(v)_g = sqrt(g(v, v))$
+  - angles $phi(v, w) = arccos((g_p (v, w))/(norm(v)_g norm(w)_g))$.
+  
+  Discretized as Gram matrix, using basis, induces by chart map.
+  $phi: p in Omega subset.eq M |-> (x_1,...,x_n)$
+  $
+    amat(G)_(i j) = g_p (restr(diff/(diff x^i))_p,restr(diff/(diff x^j))_p)
+  $
+]
+
+#slide[
+  = Metric on Simplex
+
+  Simplex is flat $=>$ Metric is constant on simplex.
+  $restr(g)_sigma = "const"$
 ]
 
 #slide[
@@ -451,60 +289,42 @@
 
   Inherits Geometry from Euclidean Ambient space.
 
-  Edge vectors $avec(e)_i = avec(v)_i - avec(v)_0 in RR^N$
+  Spanning vectors $avec(e)_i = avec(v)_i - avec(v)_0 in RR^N$
 
   $
-    amat(E) = 
-    mat(
-      |,  , |;
-      avec(e)_1,dots.c,avec(e)_n;
-      |,  , |;
-    ) in RR^(N times n)
-  $
-
-  $
-    amat(G) = amat(E)^transp amat(E)
-    \
     amat(G)_(i j) = e_i dot e_j
   $
 ]
 
 #slide[
   = Derive Metric from Edge Lengths
+  #snote[Using Regge Calculus.]
 
-  Using Regge Calculus.
+  Edge lengths
+  $
+    d: Delta_1 (mesh) -> RR^+
+    \
+    d_(i j) = d([v_i, v_j])
+  $
 
-  Law of cosines
+
+  Metric from Edge Lengths
   $
     amat(G)_(i j) = 1/2 (d_(0 i)^2 + d_(0 j)^2 - d_(i j)^2)
   $
 
-  Edge Lengths and Metric are equivalent.\
-  Other way.
+  Edge Lengths from Metric
   $
     d_(i j) = sqrt(amat(G)_(i i) + amat(G)_(j j) - 2 amat(G)_(i j))
   $
 ]
 
 #slide[
-  = Realizability Conditions.
+  = Mesh finished.
+  #v(0.5cm)
 
-  Not all edge length assignments are valid.
-
-  Edge Lengths are subject to *Realizability Conditions* for them
-  to induce positive-definite Riemannian metric.
-  (Cayley-Menger determinant must be non-negative)
-
-  Regge Calculus and GR: Negative Edge Lengths gives Pseudo-Riemannian metric,
-  e.g. Minkowski metric.
-]
-
-#slide[
-  = Mesh finished
-
-  We have
   - Topology as simplicial complex.
-  - Geometry as metric / edge lengths.
+  - Geometry as edge lengths.
 ]
 
 #slide[
@@ -532,6 +352,8 @@
   $
 
   Real valued function on all $k$-simplicies $omega: Delta_k (mesh) -> RR$
+
+  Dual to simplicial chains $C^k (mesh) = C_k (mesh)'$
 ]
 
 #slide[
@@ -539,7 +361,7 @@
 
   Discretization of continuous Differential Form via Integration map.
   $
-    I: Lambda^k (Omega) -> C^k (mesh; RR)
+    I: Lambda^k (Omega) -> C^k (mesh)
   $
 
   $
@@ -575,18 +397,15 @@
 ]
 
 #slide[
-  Computationally Discrete Exterior Derivative is transpose of signed incidence matrix.
+  = Computational Discrete Exterior Derivative
+
+  Transpose of signed incidence matrix.
   $
     amat(dif)^k = amat(D)_(k+1)^transp
   $
 
   Purely topological, no metric, no geometry.
 ]
-
-
-
-
-
 
 #slide[
   = Whitney FE Space of Differential Forms
@@ -606,18 +425,18 @@
   $  
 ]
 
-
 #slide[
-  = Whitney Subcomplex of Differential Forms
-  #v(1cm)
-
+  Whitney Subcomplex
   $
-    0 -> H Lambda^0 (Omega) limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega) -> 0
+    cal(W) Lambda^0 (mesh) limits(->)^dif dots.c limits(->)^dif cal(W) Lambda^n (mesh)
   $
 
+  De Rham Complex
   $
-    0 -> cal(W) Lambda^0 (mesh) limits(->)^dif dots.c limits(->)^dif cal(W) Lambda^n (mesh) -> 0
+    H Lambda^0 (Omega) limits(->)^dif dots.c limits(->)^dif H Lambda^n (Omega)
   $
+
+  De Rham Cohomology $cal(H)^k = (ker dif^k)/(im dif^k)$
 ]
 
 #slide[
@@ -631,9 +450,6 @@
   - $cal(W) Lambda^0 (mesh)$ on 0-simplices  $Delta_0 (mesh)$
   - $cal(W) Lambda^1 (mesh)$ on 1-simplicies $Delta_1 (mesh)$
   - $cal(W) Lambda^2 (mesh)$ on 2-simplicies $Delta_2 (mesh)$
-
-
-
 
   $
     restr(phi_sigma)_K =
@@ -672,6 +488,7 @@
 ]
 
 #slide[
+  = Local Shape Functions
   #figure(
     grid(
       columns: (1fr, 1fr, 1fr),
@@ -685,6 +502,7 @@
 ]
 
 #slide[
+  = Global Shape Functions
   #figure(
     grid(
       columns: (1fr, 1fr, 1fr),
@@ -699,6 +517,7 @@
 
 
 #slide[
+  = Whitney Forms
   #figure(
     grid(
       columns: (1fr, 1fr, 1fr),
@@ -709,15 +528,134 @@
       image("res/triforce_rot.cochain.png", width: 100%),
     ),
   ) 
-]
-
-#slide[
-  = Whitney Forms
 
   $
     u = sum_j u_j phi^k_j
+  $
+]
+
+
+#slide[
+  = Hodge-Laplace Operator
+  #snote[Generalization of scalar Laplacian]
+
+  $
+    Delta^k u = f
+  $
+
+  Now $u$ and $f$ are Differential $k$-forms.
+  $
+    u in Lambda^k (Omega), f in Lambda^k (Omega)
+  $
+
+  Involves exterior derivative and codifferential.
+  $
+    Delta^k: Lambda^k (Omega) -> Lambda^k (Omega)
     \
-    sigma = sum_j sigma_j phi^(k-1)_j
+    Delta^k := delta dif + dif delta =  delta^(k+1) dif^k + dif^(k-1) delta^k
+  $
+]
+
+
+#slide[
+  = Hodge-Laplace in $(RR^3; times, dot)$
+  #v(0.5cm)
+
+  $
+    0 -> H(grad) ->^grad Hvec(curl) ->^curl Hvec(div) ->^div L^2 -> 0
+    \
+    0 <- L^2 <-^(-div) H0vec(div) <-^curl H0vec(curl) <-^(-grad) H0(grad) <- 0
+  $
+  
+  #[
+    #set align(center)
+    #set text(17pt)
+    #table(
+      columns: 6,
+      align: center,
+      //stroke: (x, y) => if y == 0 {(bottom: fgcolor)},
+      stroke: fgcolor,
+      table.header($k$, $Delta^k = delta dif + dif delta$, $tilde(Delta)^k = inner(dif, dif) + inner(delta, delta)$, [natural BC], [essential BC], $V^(k-1) times V^k$),
+      $0$, $-div grad + 0$, $inner(grad, grad) + 0$, $diff u\/diff n$, [-], $H(grad)$,
+      $1$, $curl curl - grad div$, $inner(curl, curl) + inner(div, div)$, $curl u times n$, $u dot n$, $H(grad) times Hvec(curl)$,
+      $2$, $-grad div + curl curl$, $inner(div, div) + inner(curl, curl)$, $div u$, $u times n$, $Hvec(curl) times Hvec(div)$,
+      $3$, $0 -div grad$, $0 + inner(grad, grad)$, [-], $u$, $H(div) times L^2$,
+    )
+  ]
+
+  $k=0$: Scalar Laplacian w/ Neumann B.C. \
+  $k=1$: Vector Laplacian w/ Magnetic B.C. \
+  $k=2$: Vector Laplacian w/ Electric B.C. \
+  $k=3$: Scalar Laplacian w/ Dirichlet B.C. \
+]
+
+
+#slide[
+  = Weak Variational Form & $L^2$ Inner Product
+  #v(1cm)
+
+  The inner product is defined as
+  $
+    inner(omega, eta)_(L^2 Lambda^k (Omega))
+    := integral_Omega inner(omega_x, eta_x)_(Lambda^k) vol_g
+    = integral_Omega omega wedge hodge eta
+  $
+  #pause
+
+  Sobolev Space
+  $
+    H Lambda^k (Omega) = { omega in L^2 Lambda^k (Omega) mid(|) dif omega in L^2 Lambda^(k+1) (Omega) }
+  $
+
+  $
+    cal(W) Lambda^k (Omega) subset.eq H Lambda^k
+  $
+]
+
+#slide[
+  = Integrate against Test function
+
+  Take strong form and form $L^2$-inner product with test function $v$
+  $
+    Delta u = f
+  $
+
+  We obtain the variational equation
+  $
+    u in H Lambda^k (Omega): quad quad
+    inner(Delta u, v)_(L^2 Lambda^k (Omega)) = inner(f, v)_(L^2 Lambda^k (Omega))
+    quad quad forall v in H Lambda^k (Omega)
+  $
+]
+
+#slide[
+  = Mixed Hodge-Laplace Source Problem
+  #v(0.5cm)
+
+  $
+    Delta^k u = dif delta u &+ delta dif u = f
+    \
+    &arrow.b
+    \
+    sigma &= delta u
+    \
+    dif sigma + delta dif u &= f - p
+    \
+    u &perp frak(H)^k \
+  $
+
+  #pause
+
+  Given $f in L^2 Lambda^k$, find $(sigma,u,p) in (H Lambda^(k-1) times H Lambda^k times frak(H)^k)$ s.t.
+  $
+    inner(sigma,tau) - inner(u,dif tau) &= 0
+    quad &&forall tau in H Lambda^(k-1)
+    \
+    inner(dif sigma,v) + inner(dif u,dif v) + inner(p,v) &= inner(f,v)
+    quad &&forall v in H Lambda^k
+    \
+    inner(u,q) &= 0
+    quad &&forall q in frak(H)^k
   $
 ]
 
@@ -750,6 +688,18 @@
   = Galerkin Hodge-Laplace Source Problem
   #v(0.5cm)
 
+  Given $f in L^2 Lambda^k$, find $(sigma,u,p) in (H Lambda^(k-1) times H Lambda^k times frak(H)^k)$ s.t.
+  $
+    inner(sigma,tau) - inner(u,dif tau) &= 0
+    quad &&forall tau in H Lambda^(k-1)
+    \
+    inner(dif sigma,v) + inner(dif u,dif v) + inner(p,v) &= inner(f,v)
+    quad &&forall v in H Lambda^k
+    \
+    inner(u,q) &= 0
+    quad &&forall q in frak(H)^k
+  $
+
   
   Given $avec(b) in RR^(N_k)$, find $(avec(sigma),avec(u),avec(p)) in (RR^(N_(k-1)) times RR^(N_k) times RR^(N_k))$ s.t.
   $
@@ -761,32 +711,22 @@
   $
 
   $
-    mat(
-      amat(M)^(k-1), -(amat(dif)^(k-1))^transp amat(M), 0;
-      amat(M) amat(dif), amat(dif)^transp amat(M)^(k+1) amat(dif), amat(M) amat(H);
-      0, amat(H)^transp amat(M), 0;
-    )
-    vec(avec(sigma), avec(u), avec(p))
-    =
-    vec(0, avec(b), 0)
-  $
-
-
-  $    amat(M)^k
+    amat(M)^k
     = inner(phi^k_i, phi^k_j)_(L^2 Lambda^k (Omega))
   $
 ]
 
 #slide[
-  = Mass Bilinear Form Implementation
+  = Mass Element Matrix
+  #v(0.5cm)
 
   $
-    &inner(lambda_(i_0 dots i_k), lambda_(j_0 dots j_k))_(L^2 Lambda^k (Omega)) \
+    M^k_K &= inner(lambda_(i_0 dots i_k), lambda_(j_0 dots j_k))_(L^2 Lambda^k (K)) \
     &=
     k!^2 sum_(l=0)^k sum_(m=0)^k (-)^(l+m) innerlines(
       lambda_i_l (dif lambda_i_0 wedge dots.c wedge hat(dif lambda)_i_l wedge dots.c wedge dif lambda_i_k),
       lambda_j_m (dif lambda_j_0 wedge dots.c wedge hat(dif lambda)_j_m wedge dots.c wedge dif lambda_j_k),
-    )_(L^2 Lambda^k (Omega)) \
+    )_(L^2 Lambda^k (K)) \
     &= k!^2 sum_(l,m) (-)^(l+m) innerlines(
       dif lambda_i_0 wedge dots.c wedge hat(dif lambda)_i_l wedge dots.c wedge dif lambda_i_k,
       dif lambda_j_0 wedge dots.c wedge hat(dif lambda)_j_m wedge dots.c wedge dif lambda_j_k,
@@ -795,32 +735,49 @@
   $
 ]
 
-
-
 #slide[
-  = Results
-]
-
-
-#slide[
-  = 1-Form EVP on Annulus
+  = Harmonic Forms 
   #v(0.5cm)
 
-  #figure(
-    grid(
-      columns: (1fr, 1fr, 1fr),
-      rows: 1,
-      gutter: 0pt,
-      image("res/evp0.png", width: 100%),
-      image("res/evp5.png", width: 100%),
-      image("res/evp6.png", width: 100%),
-    ),
-  ) 
+  $
+    frak(H)^k = ker Delta = { u in Lambda^k mid(|) Delta u = 0}
+  $
+
+  Concrete Representatives of Cohomology group
+  $
+    frak(H)^k =^~ H^k
+    \
+    dim frak(H)^k = beta_k
+  $
+
+  Compute Harmonic Forms via Eigenvalue problem.
+  $
+    Delta u = 0
+    quad <==> quad
+    Delta u = lambda u "with" lambda = 0
+  $
 ]
 
 
+//#slide[
+//  = 1-Form EVP on Annulus
+//  #v(0.5cm)
+//
+//  #figure(
+//    grid(
+//      columns: (1fr, 1fr, 1fr),
+//      rows: 1,
+//      gutter: 0pt,
+//      image("res/evp0.png", width: 100%),
+//      image("res/evp5.png", width: 100%),
+//      image("res/evp6.png", width: 100%),
+//    ),
+//  ) 
+//]
+
+
 #slide[
-  = 1-Form EVP on Annulus
+  = Harmonic 1-forms on Torus
   #v(0.5cm)
 
   #figure(
@@ -834,24 +791,24 @@
   ) 
 ]
 
-#slide[
-  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
-
-  = Thank you for listening!
-
-  #set align(center + horizon)
-  #block()[
-    #set align(center)
-    #set par(spacing: 10pt)
-
-    Presentation Slides
-    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
-      options: (
-        scale: 4.0,
-        fg-color: fgcolor,
-        bg-color: bgcolor,
-      )
-    )
-    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
-  ]
-]
+//#slide[
+//  //#set page(background: image("res/bg-vibrant.jpg", width: 100%))
+//
+//  = Thank you for listening!
+//
+//  #set align(center + horizon)
+//  #block()[
+//    #set align(center)
+//    #set par(spacing: 10pt)
+//
+//    Presentation Slides
+//    #tiaoma.qrcode("https://github.com/luiswirth/feec-pres",
+//      options: (
+//        scale: 4.0,
+//        fg-color: fgcolor,
+//        bg-color: bgcolor,
+//      )
+//    )
+//    #weblink("https://github.com/luiswirth/feec-pres", "github:luiswirth/feec-pres")
+//  ]
+//]
